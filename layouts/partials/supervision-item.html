@@ -51,5 +51,17 @@
       <span class="visually-hidden">LinkedIn</span>
     </a>
     {{ end }}
+    {{ with .Params.lattes }}
+    <a href="{{ . }}" class="supervision__link" title="Lattes CV" target="_blank" rel="noopener">
+      {{ partial "icons/icons.html" "lattes" }}
+      <span class="visually-hidden">Lattes CV</span>
+    </a>
+    {{ end }}
+    {{ with .Params.github }}
+    <a href="{{ . }}" class="supervision__link" title="GitHub" target="_blank" rel="noopener">
+      {{ partial "icons/icons.html" "github" }}
+      <span class="visually-hidden">GitHub</span>
+    </a>
+    {{ end }}
   </div>
 </article>

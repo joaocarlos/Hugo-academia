@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1"/>
-      <stop offset="100%" style="stop-color:#8b5cf6"/>
-    </linearGradient>
-  </defs>
-  <!-- Background circle -->
-  <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
-  <!-- Head -->
-  <circle cx="100" cy="75" r="35" fill="#fff" opacity="0.9"/>
-  <!-- Body/shoulders -->
-  <ellipse cx="100" cy="165" rx="55" ry="45" fill="#fff" opacity="0.9"/>
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#6366f1"/>
+            <stop offset="100%" style="stop-color:#8b5cf6"/>
+        </linearGradient>
+    </defs>
+    <!-- Background circle -->
+    <circle cx="100" cy="100" r="100" fill="url(#bg)"/>
+    <!-- Head -->
+    <circle cx="100" cy="75" r="35" fill="#fff" opacity="0.9"/>
+    <!-- Body/shoulders -->
+    <ellipse cx="100" cy="165" rx="55" ry="45" fill="#fff" opacity="0.9"/>
 </svg>

@@ -2,11 +2,13 @@
 {{/* Supervision list template - matches publications style */}}
 
 {{/* Level configuration */}}
-{{ $levelOrder := slice "phd" "masters" "undergraduate" }}
+{{ $levelOrder := slice "phd" "masters" "undergraduate" "undergraduate_research" "undergraduate_extension" }}
 {{ $levelLabels := dict 
   "phd" (i18n "phd_thesis" | default "PhD") 
   "masters" (i18n "master_thesis" | default "Master's") 
-  "undergraduate" (i18n "undergraduate" | default "Undergraduate") 
+  "undergraduate" (i18n "undergraduate" | default "Undergraduate")
+  "undergraduate_research" (i18n "undergraduate_research" | default "Undergraduate Research")
+  "undergraduate_extension" (i18n "undergraduate_extension" | default "Extension Program")
 }}
 
 {{/* Get students from default language site to share across all languages */}}
