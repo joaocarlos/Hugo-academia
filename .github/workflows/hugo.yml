@@ -1,7 +1,7 @@
-# GitHub Actions workflow for Hugo site deployment
-# Place this file in .github/workflows/hugo.yml
+# GitHub Actions workflow for deploying the theme demo (exampleSite)
+# This builds and publishes the exampleSite/ folder as a live demo
 
-name: Deploy Hugo site to Pages
+name: Deploy Theme Demo
 
 on:
   # Runs on pushes targeting the default branch
@@ -62,15 +62,17 @@ jobs:
           HUGO_ENVIRONMENT: production
           TZ: America/Sao_Paulo
         run: |
+          cd exampleSite
           hugo \
             --gc \
             --minify \
+            --themesDir ../.. \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
             
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: ./exampleSite/public
 
   # Deployment job
   deploy:
