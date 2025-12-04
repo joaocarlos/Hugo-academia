@@ -56,12 +56,17 @@
     {{ end }}
   </div>
 
-  {{/* Funding */}}
-  {{ with .Params.funding }}
+  {{/* Funding - supports both structured (funding.amount/agency) and simple (funding + funding_amount) formats */}}
+  {{ if or .Params.funding .Params.funding_amount }}
   <div class="project-card__funding">
-    <span class="project-card__amount">{{ .amount }}</span>
-    {{ with .agency }}
-    <span class="project-card__agency">{{ . }}</span>
+    {{ if reflect.IsMap .Params.funding }}
+      {{/* Structured format: funding: { amount: "$1M", agency: "NSF" } */}}
+      {{ with .Params.funding.amount }}<span class="project-card__amount">{{ . }}</span>{{ end }}
+      {{ with .Params.funding.agency }}<span class="project-card__agency">{{ . }}</span>{{ end }}
+    {{ else }}
+      {{/* Simple format: funding: "NSF", funding_amount: "$1M" */}}
+      {{ with .Params.funding_amount }}<span class="project-card__amount">{{ . }}</span>{{ end }}
+      {{ with .Params.funding }}<span class="project-card__agency">{{ . }}</span>{{ end }}
     {{ end }}
   </div>
   {{ end }}
