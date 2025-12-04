@@ -1,0 +1,55 @@
+{{/* Supervision item partial - matches publication-item style */}}
+{{/* Supports translated thesis titles via thesis_title_pt, thesis_title_es, etc. */}}
+{{ $currentLang := site.Language.Lang }}
+{{ $thesisTitle := .Params.thesis_title }}
+{{/* Check for language-specific thesis title */}}
+{{ $langKey := printf "thesis_title_%s" (replace $currentLang "-" "_") }}
+{{ with index .Params $langKey }}
+  {{ $thesisTitle = . }}
+{{ end }}
+
+<article class="supervision">
+  <div class="supervision__content">
+    <h3 class="supervision__title">{{ .Title }}</h3>
+    <div class="supervision__meta">
+      {{ with $thesisTitle }}
+      <span class="supervision__thesis">{{ . }}</span>
+      {{ end }}
+      <span class="supervision__period">
+        {{ with .Params.start_year }}{{ . }}{{ end }}{{ if .Params.year_completed }}–{{ .Params.year_completed }}{{ else if .Params.start_year }}–{{ i18n "present" | default "present" }}{{ end }}
+      </span>
+      {{ with .Params.cosupervisor }}
+      <span class="supervision__cosupervisor">{{ i18n "with" | default "with" }} {{ . }}</span>
+      {{ end }}
+      {{ with .Params.current_position }}
+      <span class="supervision__position">→ {{ . }}</span>
+      {{ end }}
+    </div>
+  </div>
+  <div class="supervision__links">
+    {{ with .Params.thesis_url }}
+    <a href="{{ . }}" class="supervision__link" title="{{ i18n "view_thesis" | default "Thesis" }}" target="_blank" rel="noopener">
+      {{ partial "icons/icons.html" "file-text" }}
+      <span class="visually-hidden">{{ i18n "view_thesis" | default "Thesis" }}</span>
+    </a>
+    {{ end }}
+    {{ with .Params.website }}
+    <a href="{{ . }}" class="supervision__link" title="{{ i18n "website" | default "Website" }}" target="_blank" rel="noopener">
+      {{ partial "icons/icons.html" "external-link" }}
+      <span class="visually-hidden">{{ i18n "website" | default "Website" }}</span>
+    </a>
+    {{ end }}
+    {{ with .Params.orcid }}
+    <a href="https://orcid.org/{{ . }}" class="supervision__link" title="ORCID" target="_blank" rel="noopener">
+      {{ partial "icons/icons.html" "orcid" }}
+      <span class="visually-hidden">ORCID</span>
+    </a>
+    {{ end }}
+    {{ with .Params.linkedin }}
+    <a href="https://linkedin.com/in/{{ . }}" class="supervision__link" title="LinkedIn" target="_blank" rel="noopener">
+      {{ partial "icons/icons.html" "linkedin" }}
+      <span class="visually-hidden">LinkedIn</span>
+    </a>
+    {{ end }}
+  </div>
+</article>

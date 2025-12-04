@@ -1,0 +1,33 @@
+{{/* Timeline item shortcode
+     Usage within {{< timeline >}}:
+     {{< timeline-item date="2020-Present" title="Position" subtitle="Organization" >}}
+     Description text here
+     {{< /timeline-item >}}
+     
+     Parameters:
+     - date: Date or date range (required)
+     - title: Item title (required)
+     - subtitle: Subtitle/organization (optional)
+*/}}
+
+{{ $date := .Get "date" }}
+{{ $title := .Get "title" }}
+{{ $subtitle := .Get "subtitle" }}
+
+<div class="timeline__item">
+  {{ with $date }}
+  <span class="timeline__date">{{ . }}</span>
+  {{ end }}
+  
+  <h3 class="timeline__title">{{ $title }}</h3>
+  
+  {{ with $subtitle }}
+  <p class="timeline__subtitle">{{ . }}</p>
+  {{ end }}
+  
+  {{ if .Inner }}
+  <div class="timeline__description">
+    {{ .Inner | markdownify }}
+  </div>
+  {{ end }}
+</div>

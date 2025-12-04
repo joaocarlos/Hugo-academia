@@ -1,0 +1,178 @@
+{{ define "main" }}
+{{/* Single page template with Table of Contents */}}
+
+{{ $showToc := and (.Site.Params.toc.enable | default true) .TableOfContents }}
+{{ $hasToc := and $showToc (gt (len .TableOfContents) 100) }}
+
+<div class="{{ if $hasToc }}layout-with-toc{{ else }}container{{ end }}">
+  
+  {{/* Main article content */}}
+  <article class="article content">
+    {{/* Article header */}}
+    <header class="article__header">
+      {{/* Meta information */}}
+      <div class="article__meta">
+        {{/* Date */}}
+        {{ if .Date }}
+          <span class="article__meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <time datetime="{{ .Date.Format "2006-01-02" }}">
+              {{ $month := .Date.Format "January" }}
+              {{ $translatedMonth := i18n $month | default $month }}
+              {{ if eq .Site.Language.Lang "pt-br" }}
+                {{ .Date.Format "2" }} de {{ $translatedMonth }} de {{ .Date.Format "2006" }}
+              {{ else }}
+                {{ $translatedMonth }} {{ .Date.Format "2, 2006" }}
+              {{ end }}
+            </time>
+          </span>
+        {{ end }}
+        
+        {{/* Reading time */}}
+        {{ if .Site.Params.readingTime.enable | default true }}
+          <span class="article__meta-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            {{ i18n "reading_time" .ReadingTime | default (printf "%d min read" .ReadingTime) }}
+          </span>
+        {{ end }}
+        
+        {{/* Word count */}}
+        {{ if gt .WordCount 0 }}
+          <span class="article__meta-item">
+            {{ i18n "word_count" .WordCount | default (printf "%d words" .WordCount) }}
+          </span>
+        {{ end }}
+      </div>
+      
+      {{/* Title */}}
+      <h1 class="article__title">{{ .Title }}</h1>
+      
+      {{/* Description */}}
+      {{ with .Description }}
+        <p class="article__description">{{ . }}</p>
+      {{ end }}
+      
+      {{/* Tags */}}
+      {{ if .Params.tags }}
+        <div class="article__tags">
+          {{ range .Params.tags }}
+            <a href="{{ "tags/" | relURL }}{{ . | urlize }}" class="tag">{{ . }}</a>
+          {{ end }}
+        </div>
+      {{ end }}
+    </header>
+    
+    {{/* Mobile TOC (collapsible) */}}
+    {{ if $hasToc }}
+      <details class="toc toc--mobile">
+        <summary class="toc__title">
+          <span>{{ i18n "table_of_contents" | default "Table of Contents" }}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </summary>
+        <nav class="toc__nav">
+          {{ .TableOfContents }}
+        </nav>
+      </details>
+    {{ end }}
+    
+    {{/* Article content */}}
+    <div class="article__content">
+      {{ .Content }}
+    </div>
+    
+    {{/* Updated date */}}
+    {{ if and .Lastmod (ne .Lastmod .Date) }}
+      <footer class="article__footer">
+        <p class="article__updated">
+          <em>{{ i18n "updated_on" | default "Last updated" }}: {{ .Lastmod.Format (.Site.Params.dateFormat | default "January 2, 2006") }}</em>
+        </p>
+      </footer>
+    {{ end }}
+  </article>
+  
+  {{/* Desktop TOC */}}
+  {{ if $hasToc }}
+    {{ partial "toc.html" . }}
+  {{ end }}
+  
+</div>
+
+<style>
+  .article__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-top: var(--sp-4);
+  }
+  
+  .article__footer {
+    margin-top: var(--sp-10);
+    padding-top: var(--sp-6);
+    border-top: 1px solid var(--color-border-subtle);
+  }
+  
+  .article__updated {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+  }
+  
+  /* Mobile TOC styling */
+  .toc--mobile {
+    margin-bottom: var(--sp-8);
+    padding: 0;
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+  }
+  
+  .toc--mobile .toc__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sp-4) var(--sp-5);
+    cursor: pointer;
+    user-select: none;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    color: var(--color-text-secondary);
+  }
+  
+  .toc--mobile .toc__title svg {
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+  
+  .toc--mobile[open] .toc__title svg {
+    transform: rotate(180deg);
+  }
+  
+  .toc--mobile .toc__nav {
+    padding: 0 var(--sp-5) var(--sp-4);
+    border-left: none;
+  }
+  
+  .toc--mobile .toc__nav a {
+    border-left: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+  
+  @media (min-width: 1100px) {
+    .toc--mobile {
+      display: none;
+    }
+  }
+</style>
+
+{{ end }}

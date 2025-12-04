@@ -1,0 +1,234 @@
+{{ define "main" }}
+{{/* Term template - for individual tag/category pages like /tags/iot/ */}}
+
+<div class="container">
+  <header class="section-header">
+    <div class="term-header">
+      <a href="{{ .Parent.Permalink }}" class="term-header__back" title="{{ i18n "back" | default "Back" }}">
+        {{ partial "icons/icons.html" "arrow-left" }}
+      </a>
+      <div class="term-header__info">
+        <span class="term-header__label">{{ .Parent.Title }}</span>
+        <h1 class="term-header__title">{{ .Title }}</h1>
+      </div>
+      <span class="term-header__count">
+        {{ $count := len .Pages }}
+        {{ if eq $count 1 }}
+          {{ i18n "paper_count" 1 | default "1 paper" }}
+        {{ else }}
+          {{ i18n "paper_count" $count | default (printf "%d papers" $count) }}
+        {{ end }}
+      </span>
+    </div>
+  </header>
+
+  {{ if .Pages }}
+    <div class="term-list">
+      {{ range .Pages.ByDate.Reverse }}
+        <article class="term-list__item">
+          <div class="term-list__year">{{ .Date.Format "2006" }}</div>
+          <div class="term-list__content">
+            <h2 class="term-list__title">
+              <a href="{{ .Permalink }}">{{ .Title }}</a>
+            </h2>
+            {{ with .Params.authors }}
+              <p class="term-list__authors">
+                {{ range $i, $author := (first 3 .) }}{{ if $i }}, {{ end }}{{ $author }}{{ end }}{{ if gt (len .) 3 }} et al.{{ end }}
+              </p>
+            {{ end }}
+            {{ with .Params.venue }}
+              <p class="term-list__venue">{{ . }}</p>
+            {{ end }}
+          </div>
+          {{ with .Params.type }}
+            <span class="term-list__type term-list__type--{{ . }}">{{ . }}</span>
+          {{ end }}
+        </article>
+      {{ end }}
+    </div>
+  {{ else }}
+    <p class="list__empty">{{ i18n "no_papers" | default "No papers found." }}</p>
+  {{ end }}
+</div>
+
+<style>
+  .term-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    padding-bottom: var(--sp-6);
+    border-bottom: 1px solid var(--color-border-subtle);
+    margin-bottom: var(--sp-6);
+  }
+
+  .term-header__back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .term-header__back:hover {
+    background: var(--color-bg-alt);
+    color: var(--color-accent);
+  }
+
+  .term-header__back svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .term-header__info {
+    flex: 1;
+  }
+
+  .term-header__label {
+    display: block;
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    color: var(--color-text-muted);
+    margin-bottom: var(--sp-1);
+  }
+
+  .term-header__title {
+    font-family: var(--font-serif);
+    font-size: var(--fs-2xl);
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .term-header__count {
+    font-size: var(--fs-sm);
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .term-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+  }
+
+  .term-list__item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: var(--sp-4);
+    align-items: start;
+    padding: var(--sp-4);
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-card-border);
+    border-radius: var(--radius-lg);
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .term-list__item:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .term-list__year {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    padding-top: 2px;
+  }
+
+  .term-list__content {
+    min-width: 0;
+  }
+
+  .term-list__title {
+    font-size: var(--fs-base);
+    font-weight: 500;
+    line-height: var(--lh-snug);
+    margin: 0 0 var(--sp-1) 0;
+  }
+
+  .term-list__title a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .term-list__title a:hover {
+    color: var(--color-accent);
+  }
+
+  .term-list__authors {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+    margin: 0 0 var(--sp-1) 0;
+  }
+
+  .term-list__venue {
+    font-size: var(--fs-xs);
+    font-style: italic;
+    color: var(--color-text-faint);
+    margin: 0;
+  }
+
+  .term-list__type {
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-alt);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .term-list__type--journal {
+    background: rgba(59, 130, 246, 0.1);
+    color: rgb(59, 130, 246);
+  }
+
+  .term-list__type--conference {
+    background: rgba(34, 197, 94, 0.1);
+    color: rgb(34, 197, 94);
+  }
+
+  .term-list__type--book,
+  .term-list__type--chapter {
+    background: rgba(168, 85, 247, 0.1);
+    color: rgb(168, 85, 247);
+  }
+
+  @media (max-width: 640px) {
+    .term-header {
+      flex-wrap: wrap;
+    }
+
+    .term-header__count {
+      order: 3;
+      width: 100%;
+      text-align: center;
+      margin-top: var(--sp-2);
+    }
+
+    .term-list__item {
+      grid-template-columns: 1fr;
+      gap: var(--sp-2);
+    }
+
+    .term-list__year {
+      font-size: var(--fs-xs);
+    }
+
+    .term-list__type {
+      justify-self: start;
+    }
+  }
+</style>
+{{ end }}

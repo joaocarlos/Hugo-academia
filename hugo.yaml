@@ -1,0 +1,206 @@
+# =============================================================================
+# Academia Theme - Hugo Configuration
+# A modern, minimalist academic website theme
+# =============================================================================
+
+baseURL: "https://yourusername.github.io/"
+languageCode: "en"
+title: "Your Name"
+theme: "academia"
+
+# Build settings
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+
+# Permalinks
+permalinks:
+  posts: "/posts/:slug/"
+  papers: "/papers/:slug/"
+
+# Taxonomies
+taxonomies:
+  tag: "tags"
+  category: "categories"
+  author: "authors"
+
+# Markup configuration
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+    parser:
+      autoHeadingIDType: "github"
+  highlight:
+    style: "github"
+    lineNos: false
+    codeFences: true
+    guessSyntax: true
+  tableOfContents:
+    startLevel: 2
+    endLevel: 4
+    ordered: false
+
+# Minification
+minify:
+  disableCSS: false
+  disableHTML: false
+  disableJS: false
+  disableJSON: false
+  disableSVG: false
+  disableXML: false
+  minifyOutput: true
+
+# =============================================================================
+# Theme Parameters
+# =============================================================================
+params:
+  # Site metadata
+  description: "Academic website for Your Name"
+  author: "Your Name"
+  
+  # Profile settings (for home page)
+  profile:
+    name: "Prof. Your Name, Ph.D."
+    title: "Assistant Professor"
+    department: "Department of Computer Science"
+    institution: "Your University"
+    location: "City, Country"
+    image: "/images/profile.jpg"
+    bio: |
+      I am a professor at the Department of Computer Science at Your University.
+      My research focuses on artificial intelligence, machine learning, and their applications.
+    
+  # Research areas (displayed as cards on about page)
+  research:
+    - title: "Artificial Intelligence"
+      icon: "brain"
+      description: "Developing intelligent systems that can learn and adapt to complex environments."
+    - title: "Machine Learning"
+      icon: "chart"
+      description: "Creating algorithms that improve through experience and data analysis."
+    - title: "Internet of Things"
+      icon: "network"
+      description: "Building interconnected systems for smart environments and applications."
+    - title: "Embedded Systems"
+      icon: "cpu"
+      description: "Designing efficient computing systems for specialized applications."
+
+  # Social/Academic links
+  social:
+    - name: "Email"
+      icon: "email"
+      url: "mailto:your.email@university.edu"
+    - name: "Google Scholar"
+      icon: "scholar"
+      url: "https://scholar.google.com/citations?user=YOURID"
+    - name: "ORCID"
+      icon: "orcid"
+      url: "https://orcid.org/0000-0000-0000-0000"
+    - name: "GitHub"
+      icon: "github"
+      url: "https://github.com/yourusername"
+    - name: "Lattes"
+      icon: "lattes"
+      url: "http://lattes.cnpq.br/YOURID"
+    - name: "ResearchGate"
+      icon: "researchgate"
+      url: "https://www.researchgate.net/profile/Your-Name"
+    - name: "LinkedIn"
+      icon: "linkedin"
+      url: "https://linkedin.com/in/yourprofile"
+    - name: "YouTube"
+      icon: "youtube"
+      url: "https://youtube.com/@yourchannel"
+
+  # Theme settings
+  theme:
+    defaultMode: "auto"  # auto, light, dark
+    showThemeToggle: true
+    accentColor: "#4a5568"  # Gray accent
+    
+  # Table of Contents settings
+  toc:
+    enable: true
+    startLevel: 2
+    endLevel: 4
+    smooth: true
+    sticky: true
+    
+  # Reading time
+  readingTime:
+    enable: true
+    wordsPerMinute: 200
+    
+  # Date format
+  dateFormat: "January 2, 2006"
+  
+  # Footer
+  footer:
+    copyright: "© {year} Your Name"
+    poweredBy: true
+    
+  # SEO
+  seo:
+    twitter: "@yourusername"
+    opengraph: true
+    
+  # Analytics (optional)
+  # analytics:
+  #   google: "G-XXXXXXXXXX"
+
+# =============================================================================
+# Menu Configuration
+# =============================================================================
+menus:
+  main:
+    - name: "About me"
+      pageRef: "/about"
+      weight: 10
+    - name: "Projects"
+      pageRef: "/projects"
+      weight: 20
+    - name: "Publications"
+      pageRef: "/papers"
+      weight: 30
+    - name: "Books"
+      pageRef: "/books"
+      weight: 40
+    - name: "Teaching"
+      pageRef: "/courses"
+      weight: 50
+    - name: "Supervision"
+      pageRef: "/supervision"
+      weight: 60
+      
+  social:
+    - name: "Email"
+      url: "mailto:your.email@university.edu"
+      weight: 1
+    - name: "Scholar"
+      url: "https://scholar.google.com/"
+      weight: 2
+    - name: "GitHub"
+      url: "https://github.com/"
+      weight: 3
+
+# =============================================================================
+# Output Formats
+# =============================================================================
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+  section:
+    - HTML
+    - RSS
+  page:
+    - HTML
+
+# =============================================================================
+# Module Configuration (if using Hugo Modules)
+# =============================================================================
+# module:
+#   imports:
+#     - path: "github.com/yourusername/hugo-academia-theme"

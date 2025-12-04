@@ -1,0 +1,67 @@
+{{ define "main" }}
+
+<div class="container container--wide">
+    <header class="section-header">
+        <h1 class="section-header__title">{{ .Title }}</h1>
+        {{ with .Description }}
+        <p class="section-header__description">{{ . }}</p>
+        {{ end }} {{ with .Content }}
+        <div class="section-header__content">{{ . }}</div>
+        {{ end }}
+    </header>
+
+    {{ $active := where .Pages ".Params.status" "active" }}
+    {{ $completed := where .Pages ".Params.status" "completed" }}
+    {{ if $active }}
+    <section class="projects-section">
+        <h2 class="projects-section__title">
+            {{ i18n "active_projects" | default "Active Projects" }}
+        </h2>
+        <div class="projects-grid">
+            {{ range $active }} {{ partial "project-card.html" . }} {{ end }}
+        </div>
+    </section>
+    {{ end }} {{ if $completed }}
+    <section class="projects-section">
+        <h2 class="projects-section__title">
+            {{ i18n "completed_projects" | default "Completed Projects" }}
+        </h2>
+        <div class="projects-grid">
+            {{ range $completed }} {{ partial "project-card.html" . }} {{ end }}
+        </div>
+    </section>
+    {{ end }} {{ if not (or $active $completed) }}
+    <p class="list__empty">
+        {{ i18n "no_projects" | default "No projects available." }}
+    </p>
+    {{ end }}
+</div>
+
+<style>
+    .projects-section {
+        margin-bottom: var(--sp-10);
+    }
+
+    .projects-section__title {
+        font-family: var(--font-serif);
+        font-size: var(--fs-xl);
+        font-weight: 600;
+        margin-bottom: var(--sp-5);
+        padding-bottom: var(--sp-2);
+        border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: var(--sp-5);
+    }
+
+    @media (max-width: 440px) {
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{{ end }}

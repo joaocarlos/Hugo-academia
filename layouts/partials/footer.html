@@ -1,0 +1,29 @@
+{{/* Footer partial */}}
+<footer class="footer">
+    <div class="container">
+        <div class="footer__content">
+            {{/* Copyright */}}
+            {{ $year := now.Format "2006" }}
+            {{ $copyright := replace (.Site.Params.footer.copyright | default "© {year} {author}") "{year}" $year }}
+            {{ $copyright = replace $copyright "{author}" (.Site.Params.author | default .Site.Title) }}
+            <span>{{ $copyright | safeHTML }}</span>
+
+            {{/* Powered by */}}
+            {{ if .Site.Params.footer.poweredBy | default true }}
+            <span class="footer__separator"> · </span>
+            <span>
+                {{ i18n "powered_by" | default "Powered by" }}
+                <a href="https://gohugo.io/" target="_blank" rel="noopener noreferrer">Hugo</a>
+                &amp;
+                <a href="https://github.com/jcnbittencourt/hugo-academia" target="_blank" rel="noopener noreferrer">Academia</a>
+            </span>
+            {{ end }}
+        </div>
+    </div>
+</footer>
+
+<style>
+    .footer__separator {
+        color: var(--color-text-faint);
+    }
+</style>

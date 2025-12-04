@@ -1,0 +1,89 @@
+{{/* Publication item partial - Compact inline layout with icon-only buttons
+*/}}
+<article class="publication">
+    <div class="publication__content">
+        <h3 class="publication__title">
+            <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </h3>
+        <div class="publication__meta">
+            {{ with .Params.authors }}
+            <span class="publication__authors">{{ delimit . ", " }}</span>
+            {{ end }} {{ with .Params.venue }}
+            <span class="publication__venue">{{ . }}</span>
+            {{ end }}
+        </div>
+    </div>
+    <div class="publication__links">
+        {{ with .Params.doi }}
+        <a
+            href="https://doi.org/{{ . }}"
+            class="publication__link"
+            title="DOI"
+            target="_blank"
+            rel="noopener"
+        >
+            {{ partial "icons/icons.html" "external-link" }}
+            <span class="visually-hidden">DOI</span>
+        </a>
+        {{ end }} {{ with .Params.pdf }}
+        <a
+            href="{{ . }}"
+            class="publication__link"
+            title="PDF"
+            target="_blank"
+            rel="noopener"
+        >
+            {{ partial "icons/icons.html" "download" }}
+            <span class="visually-hidden">PDF</span>
+        </a>
+        {{ end }} {{ with .Params.code }}
+        <a
+            href="{{ . }}"
+            class="publication__link"
+            title="Code"
+            target="_blank"
+            rel="noopener"
+        >
+            {{ partial "icons/icons.html" "github" }}
+            <span class="visually-hidden">Code</span>
+        </a>
+        {{ end }} {{ with .Params.slides }}
+        <a
+            href="{{ . }}"
+            class="publication__link"
+            title="Slides"
+            target="_blank"
+            rel="noopener"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+            >
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            <span class="visually-hidden">Slides</span>
+        </a>
+        {{ end }} {{ with .Params.video }}
+        <a
+            href="{{ . }}"
+            class="publication__link"
+            title="Video"
+            target="_blank"
+            rel="noopener"
+        >
+            {{ partial "icons/icons.html" "youtube" }}
+            <span class="visually-hidden">Video</span>
+        </a>
+        {{ end }}
+    </div>
+</article>

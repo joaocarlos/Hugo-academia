@@ -1,0 +1,122 @@
+# =============================================================================
+# Portuguese (Brazil) Translations (pt-br)
+# Academia Theme - https://github.com/jcnbittencourt/hugo-academia
+# =============================================================================
+
+# Navigation / Menu
+about: "Sobre"
+projects: "Projetos"
+publications: "Publicações"
+books: "Livros"
+teaching: "Ensino"
+supervision: "Orientações"
+
+# Publications Page
+spotlight: "Destaques"
+spotlight_description: "Publicações recentes em destaque"
+journal_articles: "Artigos em Periódicos"
+conference_papers: "Artigos em Conferências"
+books_and_chapters: "Livros e Capítulos"
+preprints: "Preprints"
+table_of_contents: "Índice"
+on_this_page: "Nesta página"
+paper_count:
+    one: "1 artigo"
+    other: "{{ .Count }} artigos"
+no_papers: "Nenhum artigo disponível"
+no_tags: "Nenhuma tag encontrada."
+
+# Publication Item
+view_paper: "Ver"
+download_pdf: "Baixar PDF"
+view_code: "Código"
+view_poster: "Pôster"
+view_slides: "Slides"
+view_video: "Vídeo"
+
+# General UI
+read_more: "Leia mais"
+back: "Voltar"
+home: "Início"
+search: "Buscar"
+language: "Idioma"
+theme_toggle: "Alternar tema"
+dark_mode: "Modo escuro"
+light_mode: "Modo claro"
+website: "Website"
+
+# Profile / About
+research_areas: "Áreas de Pesquisa"
+contact: "Contato"
+office_hours: "Horário de Atendimento"
+location: "Localização"
+my_research_includes: "Minha pesquisa inclui"
+and: "e"
+social: "Redes Sociais"
+
+# Projects
+active_projects: "Projetos Ativos"
+completed_projects: "Projetos Concluídos"
+no_projects: "Nenhum projeto disponível ainda."
+status_active: "Ativo"
+status_completed: "Concluído"
+project: "Projeto"
+
+# Courses
+current_courses: "Disciplinas Atuais"
+past_courses: "Disciplinas Anteriores"
+syllabus: "Ementa"
+schedule: "Horário"
+credits: "Créditos"
+no_courses: "Nenhuma disciplina encontrada."
+
+# Books
+no_books: "Nenhum livro encontrado."
+
+# Supervision
+current_students: "Orientandos Atuais"
+alumni: "Egressos"
+master_thesis: "Mestrado"
+phd_thesis: "Doutorado"
+undergraduate: "Graduação"
+no_students: "Nenhum estudante cadastrado ainda."
+view_thesis: "Ver dissertação/tese"
+with: "com"
+now: "Atualmente"
+present: "atual"
+student_count:
+    one: "1 estudante"
+    other: "{{ .Count }} estudantes"
+
+# Footer
+powered_by: "Desenvolvido com"
+copyright: "© {{ .Year }} {{ .Name }}"
+
+# Dates and Time
+reading_time:
+    one: "{{ .Count }} min de leitura"
+    other: "{{ .Count }} min de leitura"
+word_count:
+    one: "{{ .Count }} palavra"
+    other: "{{ .Count }} palavras"
+posted_on: "Publicado em"
+updated_on: "Última atualização"
+
+# Months (Portuguese)
+January: "Janeiro"
+February: "Fevereiro"
+March: "Março"
+April: "Abril"
+May: "Maio"
+June: "Junho"
+July: "Julho"
+August: "Agosto"
+September: "Setembro"
+October: "Outubro"
+November: "Novembro"
+December: "Dezembro"
+
+# Error Pages
+page_not_found: "Página não encontrada"
+page_not_found_message: "Desculpe, a página que você procura não existe."
+go_home: "Ir para a página inicial"

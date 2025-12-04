@@ -1,0 +1,156 @@
+{{ define "main" }}
+{{/* Supervision list template - matches publications style */}}
+
+{{/* Level configuration */}}
+{{ $levelOrder := slice "phd" "masters" "undergraduate" }}
+{{ $levelLabels := dict 
+  "phd" (i18n "phd_thesis" | default "PhD") 
+  "masters" (i18n "master_thesis" | default "Master's") 
+  "undergraduate" (i18n "undergraduate" | default "Undergraduate") 
+}}
+
+{{/* Get students from default language site to share across all languages */}}
+{{ $defaultLang := site.Sites.Default }}
+{{ $supervisionSection := $defaultLang.GetPage "section" "supervision" }}
+{{ $allStudents := slice }}
+{{ with $supervisionSection }}
+  {{ $allStudents = .Pages }}
+{{ end }}
+
+{{ $current := slice }}
+{{ $alumni := slice }}
+{{ range $allStudents }}
+  {{ if eq .Params.status "current" }}
+    {{ $current = $current | append . }}
+  {{ else if eq .Params.status "completed" }}
+    {{ $alumni = $alumni | append . }}
+  {{ end }}
+{{ end }}
+
+{{/* Get alumni years */}}
+{{ $alumniYears := slice }}
+{{ range $alumni }}
+  {{ $year := string (.Params.year_completed | default "0000") }}
+  {{ if not (in $alumniYears $year) }}
+    {{ $alumniYears = $alumniYears | append $year }}
+  {{ end }}
+{{ end }}
+{{ $alumniYears = sort $alumniYears "value" "desc" }}
+
+{{/* Check if we have content */}}
+{{ $hasStudents := or (gt (len $current) 0) (gt (len $alumni) 0) }}
+
+<div class="{{ if $hasStudents }}layout-with-toc{{ else }}container{{ end }}">
+  <div class="supervision-content">
+    <header class="section-header">
+      <h1 class="section-header__title">{{ .Title }}</h1>
+      {{ with .Description }}
+        <p class="section-header__description">{{ . }}</p>
+      {{ end }}
+      {{ with .Content }}
+        <div class="section-header__content">{{ . }}</div>
+      {{ end }}
+    </header>
+
+    {{/* Current Students Section */}}
+    {{ if gt (len $current) 0 }}
+    <section class="supervision-section" id="current">
+      <header class="supervision-section__header">
+        <h2 class="supervision-section__title">{{ i18n "current_students" | default "Current Students" }}</h2>
+        <span class="supervision-section__count">{{ len $current }}</span>
+      </header>
+
+      {{/* Group by level */}}
+      {{ range $level := $levelOrder }}
+        {{ $levelStudents := slice }}
+        {{ range $current }}
+          {{ if eq .Params.level $level }}
+            {{ $levelStudents = $levelStudents | append . }}
+          {{ end }}
+        {{ end }}
+        {{ if gt (len $levelStudents) 0 }}
+        <div class="supervision-category">
+          <h3 class="supervision-category__title">{{ index $levelLabels $level }}</h3>
+          <div class="supervision-list">
+            {{ range $levelStudents }}
+              {{ partial "supervision-item.html" . }}
+            {{ end }}
+          </div>
+        </div>
+        {{ end }}
+      {{ end }}
+    </section>
+    {{ end }}
+
+    {{/* Alumni Section - grouped by year */}}
+    {{ if gt (len $alumni) 0 }}
+    {{ range $year := $alumniYears }}
+      {{ $yearAlumni := slice }}
+      {{ range $alumni }}
+        {{ $studentYear := string (.Params.year_completed | default "0000") }}
+        {{ if eq $studentYear $year }}
+          {{ $yearAlumni = $yearAlumni | append . }}
+        {{ end }}
+      {{ end }}
+
+      {{ if gt (len $yearAlumni) 0 }}
+      <section class="supervision-year" id="year-{{ $year }}">
+        <header class="supervision-year__header">
+          <h2 class="supervision-year__title">{{ $year }}</h2>
+          <span class="supervision-year__count">
+            {{ $count := len $yearAlumni }}
+            {{ i18n "student_count" $count | default (printf "%d student(s)" $count) }}
+          </span>
+        </header>
+
+        {{/* Group by level within year */}}
+        {{ range $level := $levelOrder }}
+          {{ $levelStudents := slice }}
+          {{ range $yearAlumni }}
+            {{ if eq .Params.level $level }}
+              {{ $levelStudents = $levelStudents | append . }}
+            {{ end }}
+          {{ end }}
+          {{ if gt (len $levelStudents) 0 }}
+          <div class="supervision-category">
+            <h3 class="supervision-category__title">{{ index $levelLabels $level }}</h3>
+            <div class="supervision-list">
+              {{ range $levelStudents }}
+                {{ partial "supervision-item.html" . }}
+              {{ end }}
+            </div>
+          </div>
+          {{ end }}
+        {{ end }}
+      </section>
+      {{ end }}
+    {{ end }}
+    {{ end }}
+
+    {{ if not $hasStudents }}
+    <p class="list__empty">{{ i18n "no_students" | default "No students listed yet." }}</p>
+    {{ end }}
+  </div>
+
+  {{/* Side TOC */}}
+  {{ if $hasStudents }}
+  <aside class="toc" aria-label="{{ i18n "table_of_contents" | default "Table of Contents" }}">
+    <p class="toc__title">{{ i18n "on_this_page" | default "On this page" }}</p>
+    <nav class="toc__nav">
+      <ul class="toc__list">
+        {{ if gt (len $current) 0 }}
+        <li class="toc__item">
+          <a href="#current" class="toc__link">{{ i18n "current_students" | default "Current Students" }}</a>
+        </li>
+        {{ end }}
+        {{ range $alumniYears }}
+        <li class="toc__item">
+          <a href="#year-{{ . }}" class="toc__link">{{ . }}</a>
+        </li>
+        {{ end }}
+      </ul>
+    </nav>
+  </aside>
+  {{ end }}
+</div>
+{{ end }}

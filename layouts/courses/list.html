@@ -1,0 +1,70 @@
+{{ define "main" }} {{/* Courses/Teaching list template */}}
+
+<div class="container container--wide">
+    <header class="section-header">
+        <h1 class="section-header__title">{{ .Title }}</h1>
+        {{ with .Description }}
+        <p class="section-header__description">{{ . }}</p>
+        {{ end }} {{ with .Content }}
+        <div class="section-header__content">{{ . }}</div>
+        {{ end }}
+    </header>
+
+    {{ if .Pages }} {{/* Group by current/past */}} {{ $currentCourses := slice
+    }} {{ $pastCourses := slice }} {{ range .Pages }} {{ if .Params.current |
+    default true }} {{ $currentCourses = $currentCourses | append . }} {{ else
+    }} {{ $pastCourses = $pastCourses | append . }} {{ end }} {{ end }} {{ if
+    $currentCourses }}
+    <section class="courses-section">
+        <h2 class="courses-section__title">
+            {{ i18n "current_courses" | default "Current Courses" }}
+        </h2>
+        <div class="courses-grid">
+            {{ range $currentCourses }} {{ partial "course-card.html" . }} {{
+            end }}
+        </div>
+    </section>
+    {{ end }} {{ if $pastCourses }}
+    <section class="courses-section">
+        <h2 class="courses-section__title">
+            {{ i18n "past_courses" | default "Past Courses" }}
+        </h2>
+        <div class="courses-grid">
+            {{ range $pastCourses }} {{ partial "course-card.html" . }} {{ end
+            }}
+        </div>
+    </section>
+    {{ end }} {{/* If no grouping defined, show all */}} {{ if and (not
+    $currentCourses) (not $pastCourses) }}
+    <div class="courses-grid">
+        {{ range .Pages }} {{ partial "course-card.html" . }} {{ end }}
+    </div>
+    {{ end }} {{ else }}
+    <p class="list__empty">
+        {{ i18n "no_courses" | default "No courses found." }}
+    </p>
+    {{ end }}
+</div>
+
+<style>
+    .courses-section {
+        margin-bottom: var(--sp-12);
+    }
+
+    .courses-section__title {
+        font-family: var(--font-serif);
+        font-size: var(--fs-xl);
+        color: var(--color-text-secondary);
+        margin-bottom: var(--sp-6);
+        padding-bottom: var(--sp-3);
+        border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: var(--sp-6);
+    }
+</style>
+
+{{ end }}

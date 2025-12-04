@@ -1,0 +1,44 @@
+{{/* Card shortcode
+     Usage:
+     {{< card title="Title" icon="brain" >}}
+     Description text here
+     {{< /card >}}
+     
+     Parameters:
+     - title: Card title (required)
+     - icon: Icon name from social.html partial (optional)
+     - link: URL to link to (optional)
+     - class: Additional CSS classes (optional)
+*/}}
+
+{{ $title := .Get "title" }}
+{{ $icon := .Get "icon" }}
+{{ $link := .Get "link" }}
+{{ $class := .Get "class" | default "" }}
+
+<div class="card {{ if eq $class "feature" }}feature-card{{ end }} {{ $class }}">
+  {{ if $icon }}
+  <div class="card__icon">
+    {{ partial "icons/icons.html" $icon }}
+  </div>
+  {{ end }}
+  
+  <h3 class="card__title">
+    {{ if $link }}<a href="{{ $link }}" class="card-link">{{ end }}
+    {{ $title }}
+    {{ if $link }}</a>{{ end }}
+  </h3>
+  
+  {{ if .Inner }}
+  <div class="card__description">
+    {{ .Inner | markdownify }}
+  </div>
+  {{ end }}
+  
+  {{ if $link }}
+  <a href="{{ $link }}" class="card__link">
+    Learn more
+    {{ partial "icons/icons.html" "arrow-right" }}
+  </a>
+  {{ end }}
+</div>

@@ -1,0 +1,126 @@
+{{/* Course card partial */}}
+
+<article class="course-card">
+    {{ with .Params.code }}
+    <span class="course-card__code">{{ . }}</span>
+    {{ end }}
+
+    <h3 class="course-card__title">
+        <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </h3>
+
+    {{ with .Description }}
+    <p class="course-card__description">{{ . | truncate 120 }}</p>
+    {{ else }} {{ with .Summary }}
+    <p class="course-card__description">{{ . | truncate 120 }}</p>
+    {{ end }} {{ end }}
+
+    <div class="course-card__meta">
+        {{ with .Params.semester }}
+        <span class="course-card__meta-item">
+            {{ partial "icons/icons.html" "calendar" }} {{ . }}
+        </span>
+        {{ end }} {{ with .Params.credits }}
+        <span class="course-card__meta-item"> {{ . }} credits </span>
+        {{ end }} {{ with .Params.level }}
+        <span class="course-card__meta-item"> {{ . }} </span>
+        {{ end }}
+    </div>
+
+    {{ with .Params.syllabus }}
+    <a href="{{ . }}" class="course-card__link" target="_blank" rel="noopener">
+        {{ partial "icons/icons.html" "download" }}
+        <span>{{ i18n "syllabus" | default "Syllabus" }}</span>
+    </a>
+    {{ end }}
+</article>
+
+<style>
+    .course-card {
+        padding: var(--sp-6);
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        transition: all var(--duration-normal) var(--ease-out);
+    }
+
+    .course-card:hover {
+        border-color: var(--color-border-strong);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+
+    .course-card__code {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        font-weight: 500;
+        color: var(--color-accent);
+        background: var(--color-accent-light);
+        padding: var(--sp-1) var(--sp-2);
+        border-radius: var(--radius-sm);
+        margin-bottom: var(--sp-3);
+    }
+
+    .course-card__title {
+        font-family: var(--font-serif);
+        font-size: var(--fs-xl);
+        font-weight: 600;
+        margin-bottom: var(--sp-3);
+        line-height: var(--lh-snug);
+    }
+
+    .course-card__title a {
+        color: var(--color-text);
+        text-decoration: none;
+    }
+
+    .course-card__title a:hover {
+        color: var(--color-accent);
+    }
+
+    .course-card__description {
+        font-size: var(--fs-sm);
+        color: var(--color-text-secondary);
+        line-height: var(--lh-relaxed);
+        margin-bottom: var(--sp-4);
+    }
+
+    .course-card__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--sp-4);
+        font-size: var(--fs-xs);
+        color: var(--color-text-muted);
+        margin-bottom: var(--sp-4);
+    }
+
+    .course-card__meta-item {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-1);
+    }
+
+    .course-card__meta-item svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .course-card__link {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sp-2);
+        font-size: var(--fs-sm);
+        font-weight: 500;
+        color: var(--color-accent);
+    }
+
+    .course-card__link svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .course-card__link:hover {
+        text-decoration: underline;
+    }
+</style>

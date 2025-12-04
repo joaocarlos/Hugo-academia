@@ -1,0 +1,127 @@
+{{ define "main" }}
+{{/* Taxonomy template - handles both taxonomy lists (/tags/) and term pages (/tags/iot/) */}}
+
+<div class="container">
+  <header class="section-header">
+    <h1 class="section-header__title">{{ .Title }}</h1>
+    {{ with .Description }}
+      <p class="section-header__description">{{ . }}</p>
+    {{ end }}
+  </header>
+
+  {{/* Check if this is a taxonomy list (has .Data.Terms) or a term page */}}
+  {{ if .Data.Terms }}
+    {{/* Taxonomy list - show tag cloud */}}
+    <div class="taxonomy-cloud">
+      {{ range .Data.Terms.ByCount }}
+        {{ $count := .Count }}
+        {{ $size := "sm" }}
+        {{ if gt $count 10 }}
+          {{ $size = "xl" }}
+        {{ else if gt $count 5 }}
+          {{ $size = "lg" }}
+        {{ else if gt $count 2 }}
+          {{ $size = "md" }}
+        {{ end }}
+        <a href="{{ .Page.Permalink }}" class="taxonomy-cloud__item taxonomy-cloud__item--{{ $size }}">
+          <span class="taxonomy-cloud__name">{{ .Page.Title }}</span>
+          <span class="taxonomy-cloud__count">{{ $count }}</span>
+        </a>
+      {{ end }}
+    </div>
+  {{ else if .Pages }}
+    {{/* Term page - list pages with this term */}}
+    <div class="list">
+      {{ range .Pages.ByDate.Reverse }}
+        <article class="list__item">
+          <header class="list__header">
+            {{ if .Date }}
+              <time class="list__date" datetime="{{ .Date.Format "2006-01-02" }}">
+                {{ .Date.Format "Jan 2, 2006" }}
+              </time>
+            {{ end }}
+            <h2 class="list__title">
+              <a href="{{ .Permalink }}">{{ .Title }}</a>
+            </h2>
+          </header>
+          {{ with .Description }}
+            <p class="list__description">{{ . }}</p>
+          {{ else }}
+            {{ if .Content }}
+              <p class="list__description">{{ .Content | plainify | truncate 200 }}</p>
+            {{ end }}
+          {{ end }}
+        </article>
+      {{ end }}
+    </div>
+  {{ else }}
+    <p class="list__empty">{{ i18n "no_items" | default "No items found." }}</p>
+  {{ end }}
+</div>
+
+<style>
+  .taxonomy-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    padding: var(--sp-6) 0;
+  }
+
+  .taxonomy-cloud__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+
+  .taxonomy-cloud__item:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .taxonomy-cloud__item--sm {
+    font-size: var(--fs-sm);
+  }
+
+  .taxonomy-cloud__item--md {
+    font-size: var(--fs-base);
+  }
+
+  .taxonomy-cloud__item--lg {
+    font-size: var(--fs-lg);
+    font-weight: 500;
+  }
+
+  .taxonomy-cloud__item--xl {
+    font-size: var(--fs-xl);
+    font-weight: 600;
+  }
+
+  .taxonomy-cloud__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5em;
+    padding: 0.1em 0.4em;
+    font-size: 0.75em;
+    font-weight: 600;
+    background: var(--color-bg);
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+  }
+
+  .taxonomy-cloud__item:hover .taxonomy-cloud__count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+</style>
+{{ end }}

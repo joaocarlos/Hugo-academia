@@ -1,0 +1,16 @@
+{{/* Badge shortcode
+     Usage:
+     {{< badge >}}Default{{< /badge >}}
+     {{< badge type="success" >}}Success{{< /badge >}}
+     {{< badge type="warning" >}}Warning{{< /badge >}}
+     {{< badge type="info" >}}Info{{< /badge >}}
+     
+     Parameters:
+     - type: Badge type (default, success, warning, info, error)
+*/}}
+
+{{ $type := .Get "type" | default "default" }}
+
+<span class="badge{{ if ne $type "default" }} badge--{{ $type }}{{ end }}">
+  {{ .Inner }}
+</span>

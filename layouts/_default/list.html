@@ -1,0 +1,184 @@
+{{ define "main" }}
+{{/* Default list template for sections */}}
+
+<div class="container">
+  <header class="section-header">
+    <h1 class="section-header__title">{{ .Title }}</h1>
+    {{ with .Description }}
+      <p class="section-header__description">{{ . }}</p>
+    {{ end }}
+    {{ with .Content }}
+      <div class="section-header__content">
+        {{ . }}
+      </div>
+    {{ end }}
+  </header>
+  
+  {{ if .Pages }}
+    <div class="list">
+      {{ range .Pages.ByDate.Reverse }}
+        <article class="list__item">
+          <header class="list__header">
+            {{ if .Date }}
+              <time class="list__date" datetime="{{ .Date.Format "2006-01-02" }}">
+                {{ $monthFull := .Date.Format "January" }}
+                {{ $translatedMonth := i18n $monthFull | default $monthFull }}
+                {{ if eq .Site.Language.Lang "pt-br" }}
+                  {{ .Date.Format "2" }} {{ $translatedMonth | truncate 3 "" }} {{ .Date.Format "2006" }}
+                {{ else }}
+                  {{ $translatedMonth | truncate 3 "" }} {{ .Date.Format "2, 2006" }}
+                {{ end }}
+              </time>
+            {{ end }}
+            <h2 class="list__title">
+              <a href="{{ .Permalink }}">{{ .Title }}</a>
+            </h2>
+          </header>
+          {{ with .Description }}
+            <p class="list__description">{{ . }}</p>
+          {{ else }}
+            {{ if .Content }}
+              <p class="list__description">{{ .Content | plainify | truncate 200 }}</p>
+            {{ end }}
+          {{ end }}
+          {{ if .Params.tags }}
+            <div class="list__tags">
+              {{ range first 3 .Params.tags }}
+                <span class="tag">{{ . }}</span>
+              {{ end }}
+            </div>
+          {{ end }}
+        </article>
+      {{ end }}
+    </div>
+  {{ else }}
+    <p class="list__empty">No items found in this section.</p>
+  {{ end }}
+  
+  {{/* Pagination */}}
+  {{ template "_internal/pagination.html" . }}
+</div>
+
+<style>
+  .section-header {
+    margin-bottom: var(--sp-10);
+    padding-bottom: var(--sp-8);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  
+  .section-header__title {
+    margin-bottom: var(--sp-4);
+  }
+  
+  .section-header__description {
+    font-size: var(--fs-lg);
+    color: var(--color-text-secondary);
+    max-width: 600px;
+  }
+  
+  .section-header__content {
+    margin-top: var(--sp-6);
+  }
+  
+  .list__item {
+    padding: var(--sp-6) 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  
+  .list__item:last-child {
+    border-bottom: none;
+  }
+  
+  .list__header {
+    margin-bottom: var(--sp-3);
+  }
+  
+  .list__date {
+    display: block;
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--sp-2);
+  }
+  
+  .list__title {
+    font-family: var(--font-serif);
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    line-height: var(--lh-snug);
+    margin: 0;
+  }
+  
+  .list__title a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  
+  .list__title a:hover {
+    color: var(--color-accent);
+  }
+  
+  .list__description {
+    font-size: var(--fs-base);
+    color: var(--color-text-secondary);
+    line-height: var(--lh-relaxed);
+    margin-bottom: var(--sp-3);
+  }
+  
+  .list__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
+  
+  .list__empty {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: var(--sp-12) 0;
+  }
+  
+  /* Pagination styles */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-10);
+    padding-top: var(--sp-8);
+    border-top: 1px solid var(--color-border-subtle);
+  }
+  
+  .pagination .page-item {
+    list-style: none;
+  }
+  
+  .pagination .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--color-text-secondary);
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-out);
+  }
+  
+  .pagination .page-link:hover {
+    background: var(--color-accent-light);
+    color: var(--color-accent);
+  }
+  
+  .pagination .page-item.active .page-link {
+    background: var(--color-accent);
+    color: white;
+  }
+  
+  .pagination .page-item.disabled .page-link {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+</style>
+
+{{ end }}

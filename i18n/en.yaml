@@ -1,0 +1,108 @@
+# =============================================================================
+# English Translations (en)
+# Academia Theme - https://github.com/jcnbittencourt/hugo-academia
+# =============================================================================
+
+# Navigation / Menu
+about: "About me"
+projects: "Projects"
+publications: "Publications"
+books: "Books"
+teaching: "Teaching"
+supervision: "Supervision"
+
+# Publications Page
+spotlight: "Spotlight"
+spotlight_description: "Featured recent publications"
+journal_articles: "Journal Articles"
+conference_papers: "Conference Papers"
+books_and_chapters: "Books & Chapters"
+preprints: "Preprints"
+table_of_contents: "Table of Contents"
+on_this_page: "On this page"
+paper_count:
+    one: "1 paper"
+    other: "{{ .Count }} papers"
+no_papers: "No papers available"
+no_tags: "No tags found."
+
+# Publication Item
+view_paper: "View"
+download_pdf: "Download PDF"
+view_code: "Code"
+view_poster: "Poster"
+view_slides: "Slides"
+view_video: "Video"
+
+# General UI
+read_more: "Read more"
+back: "Back"
+home: "Home"
+search: "Search"
+language: "Language"
+theme_toggle: "Toggle theme"
+dark_mode: "Dark mode"
+light_mode: "Light mode"
+website: "Website"
+
+# Profile / About
+research_areas: "Research Areas"
+contact: "Contact"
+office_hours: "Office Hours"
+location: "Location"
+my_research_includes: "My research includes"
+and: "and"
+social: "Social"
+
+# Projects
+active_projects: "Active Projects"
+completed_projects: "Completed Projects"
+no_projects: "No projects available yet."
+status_active: "Active"
+status_completed: "Completed"
+project: "Project"
+
+# Courses
+current_courses: "Current Courses"
+past_courses: "Past Courses"
+syllabus: "Syllabus"
+schedule: "Schedule"
+credits: "Credits"
+no_courses: "No courses found."
+
+# Books
+no_books: "No books found."
+
+# Supervision
+current_students: "Current Students"
+alumni: "Alumni"
+master_thesis: "Master's"
+phd_thesis: "PhD"
+undergraduate: "Undergraduate"
+no_students: "No students listed yet."
+view_thesis: "View thesis"
+with: "with"
+now: "Now"
+present: "present"
+student_count:
+    one: "1 student"
+    other: "{{ .Count }} students"
+
+# Footer
+powered_by: "Powered by"
+copyright: "© {{ .Year }} {{ .Name }}"
+
+# Dates and Time
+reading_time:
+    one: "{{ .Count }} min read"
+    other: "{{ .Count }} min read"
+word_count:
+    one: "{{ .Count }} word"
+    other: "{{ .Count }} words"
+posted_on: "Posted on"
+updated_on: "Last updated"
+
+# Error Pages
+page_not_found: "Page not found"
+page_not_found_message: "Sorry, the page you are looking for does not exist."
+go_home: "Go to homepage"

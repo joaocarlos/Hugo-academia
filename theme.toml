@@ -1,0 +1,39 @@
+# Theme metadata for Hugo Themes directory
+# https://themes.gohugo.io/
+
+name = "Academia"
+license = "MIT"
+licenselink = "https://github.com/joaocarlos/hugo-academia/blob/main/LICENSE"
+description = "A modern, minimalist Hugo theme for academic websites"
+homepage = "https://github.com/joaocarlos/hugo-academia"
+demosite = "https://joaocarlos.github.io/hugo-academia/"
+tags = [
+  "academic",
+  "blog",
+  "clean",
+  "dark mode",
+  "docs",
+  "fast",
+  "light",
+  "minimal",
+  "modern",
+  "multilingual",
+  "personal",
+  "portfolio",
+  "responsive",
+  "search",
+  "simple"
+]
+features = [
+  "dark mode",
+  "responsive",
+  "toc",
+  "shortcodes",
+  "seo",
+  "accessibility"
+]
+min_version = "0.112.0"
+
+[author]
+  name = "João Carlos N. Bittencourt"
+  homepage = "https://joaocarlos.github.io/"

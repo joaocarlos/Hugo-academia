@@ -1,0 +1,19 @@
+{{/* Research cards shortcode - pulls from site.Params.research Usage: {{<
+research-cards >}} Displays research areas defined in hugo.yaml params.research
+*/}} {{ with site.Params.research }}
+<div class="cards">
+    {{ range . }}
+    <div class="card">
+        {{ with .icon }}
+        <div class="card__icon">{{ partial "icons/icons.html" . }}</div>
+        {{ end }}
+        <h3 class="card__title">{{ .title }}</h3>
+        {{ with .description }}
+        <p class="card__description">{{ . }}</p>
+        {{ end }}
+    </div>
+    {{ end }}
+</div>
+{{ else }}
+<p class="list__empty">No research areas defined in site configuration.</p>
+{{ end }}

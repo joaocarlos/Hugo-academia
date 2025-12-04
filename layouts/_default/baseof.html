@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default "en" }}" data-theme="{{ .Site.Params.theme.defaultMode | default "auto" }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  {{/* Title */}}
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+  
+  {{/* Meta description */}}
+  {{ $description := .Description | default .Site.Params.description | default .Summary }}
+  <meta name="description" content="{{ $description | plainify | truncate 160 }}">
+  
+  {{/* Author */}}
+  <meta name="author" content="{{ .Site.Params.author | default .Site.Title }}">
+  
+  {{/* Canonical URL */}}
+  <link rel="canonical" href="{{ .Permalink }}">
+  
+  {{/* Fonts - Cormorant Garamond for headings, Montserrat for body */}}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  {{/* Main stylesheet */}}
+  {{ $css := resources.Get "css/main.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+  
+  {{/* Custom CSS if exists */}}
+  {{ if resources.Get "css/custom.css" }}
+    {{ $customCSS := resources.Get "css/custom.css" | minify | fingerprint }}
+    <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}" integrity="{{ $customCSS.Data.Integrity }}">
+  {{ end }}
+  
+  {{/* Favicon */}}
+  <link rel="icon" type="image/x-icon" href="{{ "favicon.ico" | relURL }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ "apple-touch-icon.png" | relURL }}">
+  
+  {{/* RSS */}}
+  {{ range .AlternativeOutputFormats }}
+    {{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+  {{ end }}
+  
+  {{/* Open Graph / Twitter */}}
+  {{ template "_internal/opengraph.html" . }}
+  {{ template "_internal/twitter_cards.html" . }}
+  
+  {{/* Schema.org for academics */}}
+  {{ if .IsPage }}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "{{ if eq .Section "papers" }}ScholarlyArticle{{ else if eq .Section "posts" }}BlogPosting{{ else }}WebPage{{ end }}",
+    "headline": "{{ .Title }}",
+    "author": {
+      "@type": "Person",
+      "name": "{{ .Site.Params.author }}"
+    },
+    "datePublished": "{{ .Date.Format "2006-01-02" }}",
+    "dateModified": "{{ .Lastmod.Format "2006-01-02" }}",
+    "description": "{{ $description | plainify | truncate 160 }}",
+    "url": "{{ .Permalink }}"
+  }
+  </script>
+  {{ end }}
+  
+  {{/* Theme script - runs before body to prevent flash */}}
+  <script>
+    (function() {
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = stored || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+</head>
+<body>
+  {{/* Skip link for accessibility */}}
+  <a href="#main-content" class="visually-hidden">Skip to main content</a>
+  
+  {{/* Header */}}
+  {{ partial "header.html" . }}
+  
+  {{/* Mobile menu */}}
+  {{ partial "mobile-menu.html" . }}
+  
+  {{/* Main content */}}
+  <main id="main-content">
+    {{ block "main" . }}{{ end }}
+  </main>
+  
+  {{/* Footer */}}
+  {{ partial "footer.html" . }}
+  
+  {{/* Main JavaScript */}}
+  {{ $js := resources.Get "js/main.js" | minify | fingerprint }}
+  <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+  
+  {{/* Analytics */}}
+  {{ if .Site.Params.analytics.google }}
+    {{ template "_internal/google_analytics.html" . }}
+  {{ end }}
+</body>
+</html>

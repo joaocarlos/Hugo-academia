@@ -1,0 +1,384 @@
+{{ define "main" }} {{/* Publications list template - Year → Category hierarchy
+with Spotlight */}} {{/* Category configuration */}} {{ $categoryOrder := slice
+"journal" "conference" "book" "preprint" }} {{ $categoryLabels := dict "journal"
+(i18n "journal_articles") "conference" (i18n "conference_papers") "book" (i18n "books_and_chapters")
+"preprint" (i18n "preprints") }} 
+
+{{/* Get papers from default language site to share across all languages */}}
+{{ $defaultLang := site.Sites.Default }}
+{{ $papersSection := $defaultLang.GetPage "section" "papers" }}
+{{ $papers := slice }}
+{{ with $papersSection }}
+  {{ $papers = .Pages.ByDate.Reverse }}
+{{ end }}
+
+{{/* Collect spotlight publications */}} {{
+$spotlightPapers := where $papers ".Params.spotlight" true }} {{/* Collect
+unique years */}} {{ $years := slice }} {{ range $papers }} {{ $year :=
+.Date.Format "2006" }} {{ if not (in $years $year) }} {{ $years = $years |
+append $year }} {{ end }} {{ end }}
+
+<div class="{{ if $years }}layout-with-toc{{ else }}container{{ end }}">
+    <div class="publications-content">
+        <header class="section-header">
+            <h1 class="section-header__title">{{ .Title }}</h1>
+            {{ with .Description }}
+            <p class="section-header__description">{{ . }}</p>
+            {{ end }} {{ with .Content }}
+            <div class="section-header__content">{{ . }}</div>
+            {{ end }}
+        </header>
+
+        {{/* Spotlight Section */}} {{ if $spotlightPapers }}
+        <section class="publications-spotlight" id="spotlight">
+            <header class="publications-spotlight__header">
+                <span class="publications-spotlight__icon">✦</span>
+                <h2 class="publications-spotlight__title">{{ i18n "spotlight" }}</h2>
+            </header>
+            <div class="publications-list">
+                {{ range $spotlightPapers }} {{ partial "publication-item.html"
+                . }} {{ end }}
+            </div>
+        </section>
+        {{ end }} {{/* Year sections with category subsections */}} {{ range
+        $year := $years }} {{/* Filter papers by year */}} {{ $yearPapers :=
+        slice }} {{ range $papers }} {{ if eq (.Date.Format "2006") $year }} {{
+        $yearPapers = $yearPapers | append . }} {{ end }} {{ end }}
+        <section class="publications-year" id="year-{{ $year }}">
+            <header class="publications-year__header">
+                <h2 class="publications-year__title">{{ $year }}</h2>
+                <span class="publications-year__count"
+                    >{{ i18n "paper_count" (len $yearPapers) }}</span
+                >
+            </header>
+
+            {{/* Category subsections */}} {{ range $cat := $categoryOrder }} {{
+            $catPapers := where $yearPapers ".Params.type" $cat }} {{ if
+            $catPapers }}
+            <div class="publications-category">
+                <h3 class="publications-category__title">
+                    {{ index $categoryLabels $cat }}
+                </h3>
+                <div class="publications-list">
+                    {{ range $catPapers }} {{ partial "publication-item.html" .
+                    }} {{ end }}
+                </div>
+            </div>
+            {{ end }} {{ end }} {{/* Papers without a type (fallback) */}} {{
+            $uncategorized := slice }} {{ range $yearPapers }} {{ if not
+            .Params.type }} {{ $uncategorized = $uncategorized | append . }} {{
+            end }} {{ end }} {{ if $uncategorized }}
+            <div class="publications-list">
+                {{ range $uncategorized }} {{ partial "publication-item.html" .
+                }} {{ end }}
+            </div>
+            {{ end }}
+        </section>
+        {{ end }} {{ if not .Pages }}
+        <p class="list__empty">{{ i18n "no_papers" }}</p>
+        {{ end }}
+    </div>
+
+    {{/* Side TOC */}} {{ if or $spotlightPapers $years }}
+    <aside class="toc" aria-label="{{ i18n "table_of_contents" }}">
+        <p class="toc__title">{{ i18n "table_of_contents" }}</p>
+        <nav class="toc__nav" id="publications-toc-nav">
+            <ul class="toc__list">
+                {{ if $spotlightPapers }}
+                <li class="toc__item">
+                    <a href="#spotlight" class="toc__link">✦ {{ i18n "spotlight" }}</a>
+                </li>
+                {{ end }} {{ range $years }}
+                <li class="toc__item">
+                    <a href="#year-{{ . }}" class="toc__link">{{ . }}</a>
+                </li>
+                {{ end }}
+            </ul>
+        </nav>
+    </aside>
+    {{ end }}
+</div>
+
+<style>
+    /* Spotlight Section */
+    .publications-spotlight {
+        margin-bottom: var(--sp-10);
+        padding: var(--sp-4) var(--sp-6) var(--sp-6);
+        background: linear-gradient(
+            135deg,
+            rgba(139, 92, 246, 0.08) 0%,
+            var(--color-bg-alt) 100%
+        );
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        scroll-margin-top: calc(var(--header-height) + var(--sp-4));
+    }
+
+    [data-theme="dark"] .publications-spotlight {
+        background: linear-gradient(
+            135deg,
+            rgba(167, 139, 250, 0.1) 0%,
+            var(--color-bg-alt) 100%
+        );
+        border-color: rgba(167, 139, 250, 0.25);
+    }
+
+    .publications-spotlight__header {
+        display: flex;
+        align-items: baseline;
+        gap: var(--sp-3);
+        margin-bottom: var(--sp-4);
+        cursor: default;
+    }
+
+    .publications-spotlight__icon {
+        font-size: var(--fs-xl);
+        display: inline-block;
+        transition: transform 0.3s ease;
+        position: relative;
+        top: 0.1em;
+    }
+
+    .publications-spotlight__header:hover .publications-spotlight__icon {
+        animation: sparkle 0.6s ease-in-out;
+    }
+
+    @keyframes sparkle {
+        0% {
+            transform: scale(1) rotate(0deg);
+        }
+        25% {
+            transform: scale(1.3) rotate(-10deg);
+        }
+        50% {
+            transform: scale(1.1) rotate(10deg);
+        }
+        75% {
+            transform: scale(1.25) rotate(-5deg);
+        }
+        100% {
+            transform: scale(1) rotate(0deg);
+        }
+    }
+
+    .publications-spotlight__title {
+        font-family: var(--font-serif);
+        font-size: var(--fs-xl);
+        font-weight: 600;
+        color: var(--color-accent);
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+
+    .publications-spotlight .publication {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--color-border-subtle);
+        border-radius: 0;
+        padding: var(--sp-4) var(--sp-3);
+        margin: 0 calc(-1 * var(--sp-3));
+    }
+
+    .publications-spotlight .publication:last-child {
+        border-bottom: none;
+    }
+
+    .publications-spotlight .publication:hover {
+        background: rgba(139, 92, 246, 0.05);
+    }
+
+    [data-theme="dark"] .publications-spotlight .publication:hover {
+        background: rgba(167, 139, 250, 0.08);
+    }
+
+    /* Year Section */
+    .publications-year {
+        margin-bottom: var(--sp-10);
+        scroll-margin-top: calc(var(--header-height) + var(--sp-4));
+    }
+
+    .publications-year__header {
+        display: flex;
+        align-items: baseline;
+        gap: var(--sp-3);
+        margin-bottom: var(--sp-4);
+        padding-bottom: var(--sp-2);
+        border-bottom: 2px solid var(--color-border-subtle);
+    }
+
+    .publications-year__title {
+        font-family: var(--font-serif);
+        font-size: var(--fs-2xl);
+        font-weight: 600;
+        color: var(--color-accent);
+        border-bottom: 0;
+        margin: 0;
+        padding: 0;
+        line-height: 1.2;
+    }
+
+    .publications-year__count {
+        font-size: var(--fs-xs);
+        font-weight: 500;
+        color: var(--color-text-muted);
+        background: var(--color-bg-alt);
+        padding: var(--sp-1) var(--sp-2);
+        border-radius: var(--radius-sm);
+    }
+
+    /* Category Subsection */
+    .publications-category {
+        margin-bottom: var(--sp-6);
+        margin-top: var(--sp-4);
+    }
+
+    .publications-category:last-child {
+        margin-bottom: 0;
+    }
+
+    .publications-category__title {
+        font-family: var(--font-sans);
+        font-size: var(--fs-sm);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-muted);
+        margin-bottom: var(--sp-3);
+    }
+
+    /* Publications List */
+    .publications-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Publication Item - Compact Inline */
+    .publication {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: var(--sp-4);
+        align-items: center;
+        padding: var(--sp-4) var(--sp-3);
+        margin: 0 calc(-1 * var(--sp-3));
+        border-bottom: 1px solid var(--color-border-subtle);
+        border-radius: var(--radius-sm);
+        transition: background var(--duration-fast) var(--ease-out);
+    }
+
+    .publication:hover {
+        background: var(--color-bg-alt);
+    }
+
+    .publication:last-child {
+        border-bottom: none;
+    }
+
+    .publication__content {
+        min-width: 0;
+    }
+
+    .publication__title {
+        font-family: var(--font-serif);
+        font-size: var(--fs-lg);
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: var(--sp-1);
+    }
+
+    .publication__title a {
+        color: var(--color-text);
+        text-decoration: none;
+        transition: color var(--duration-fast) var(--ease-out);
+    }
+
+    .publication__title a:hover {
+        color: var(--color-accent);
+    }
+
+    .publication__meta {
+        font-size: var(--fs-sm);
+        line-height: 1.5;
+    }
+
+    .publication__authors {
+        color: var(--color-text-secondary);
+    }
+
+    .publication__venue {
+        display: block;
+        font-style: italic;
+        color: var(--color-text-muted);
+        margin-top: var(--sp-1);
+    }
+
+    /* Icon-only action buttons */
+    .publication__links {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-1);
+    }
+
+    .publication__link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        color: var(--color-text-muted);
+        background: transparent;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        transition: all var(--duration-fast) var(--ease-out);
+        text-decoration: none;
+    }
+
+    .publication__link:hover {
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+        background: var(--color-bg-alt);
+    }
+
+    .publication__link svg {
+        width: 16px;
+        height: 16px;
+    }
+</style>
+
+<script>
+    // Highlight active section in TOC based on scroll position
+    ;(function () {
+        const tocNav = document.getElementById("publications-toc-nav")
+        if (!tocNav) return
+
+        const links = tocNav.querySelectorAll(".toc__link")
+        const sections = document.querySelectorAll(
+            ".publications-year, .publications-spotlight",
+        )
+
+        function updateActiveLink() {
+            let currentSection = null
+            const scrollPos = window.scrollY + 150
+
+            sections.forEach((section) => {
+                if (section.offsetTop <= scrollPos) {
+                    currentSection = section
+                }
+            })
+
+            links.forEach((link) => {
+                link.classList.remove("toc-active")
+                if (
+                    currentSection &&
+                    link.getAttribute("href") === "#" + currentSection.id
+                ) {
+                    link.classList.add("toc-active")
+                }
+            })
+        }
+
+        window.addEventListener("scroll", updateActiveLink, { passive: true })
+        updateActiveLink()
+    })()
+</script>
+
+{{ end }}

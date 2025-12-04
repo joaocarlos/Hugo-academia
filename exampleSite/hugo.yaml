@@ -1,0 +1,182 @@
+# =============================================================================
+# Academia Theme - Example Site Configuration
+# =============================================================================
+
+baseURL: "https://example.com/"
+languageCode: "en"
+title: "Dr. Jane Smith"
+theme: "academia"
+
+# Build settings
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+
+# Enable multilingual
+defaultContentLanguage: "en"
+defaultContentLanguageInSubdir: false
+
+# Permalinks
+permalinks:
+  papers: "/papers/:slug/"
+  courses: "/courses/:slug/"
+  projects: "/projects/:slug/"
+
+# Taxonomies
+taxonomies:
+  tag: "tags"
+  category: "categories"
+  author: "authors"
+
+# Markup configuration
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    style: "github"
+    lineNos: false
+  tableOfContents:
+    startLevel: 2
+    endLevel: 4
+
+# Minification
+minify:
+  minifyOutput: true
+
+# =============================================================================
+# Languages
+# =============================================================================
+languages:
+  en:
+    languageName: "English"
+    weight: 1
+    menus:
+      main:
+        - name: "About"
+          pageRef: "/about"
+          weight: 10
+        - name: "Projects"
+          pageRef: "/projects"
+          weight: 20
+        - name: "Publications"
+          pageRef: "/papers"
+          weight: 30
+        - name: "Teaching"
+          pageRef: "/courses"
+          weight: 40
+        - name: "Supervision"
+          pageRef: "/supervision"
+          weight: 50
+
+  pt-br:
+    languageName: "Português"
+    weight: 2
+    params:
+      profile:
+        bio: |
+          Sou Professora Associada no Departamento de Ciência da Computação 
+          da Universidade Exemplo. Minha pesquisa foca em inteligência artificial,
+          aprendizado de máquina e suas aplicações em cidades inteligentes.
+    menus:
+      main:
+        - name: "Sobre"
+          pageRef: "/about"
+          weight: 10
+        - name: "Projetos"
+          pageRef: "/projects"
+          weight: 20
+        - name: "Publicações"
+          pageRef: "/papers"
+          weight: 30
+        - name: "Ensino"
+          pageRef: "/courses"
+          weight: 40
+        - name: "Orientação"
+          pageRef: "/supervision"
+          weight: 50
+
+# =============================================================================
+# Theme Parameters
+# =============================================================================
+params:
+  description: "Academic website for Dr. Jane Smith"
+  author: "Dr. Jane Smith"
+  
+  # Profile settings (for home page)
+  profile:
+    name: "Dr. Jane Smith"
+    title: "Associate Professor"
+    department: "Department of Computer Science"
+    institution: "Example University"
+    location: "San Francisco, CA"
+    image: "/images/profile.jpg"
+    bio: |
+      I am an Associate Professor at the Department of Computer Science at 
+      Example University. My research focuses on artificial intelligence, 
+      machine learning, and their applications to smart cities and urban computing.
+    
+  # Research areas
+  research:
+    - title: "Artificial Intelligence"
+      icon: "brain"
+      description: "Developing intelligent systems that can learn and adapt to complex environments."
+    - title: "Machine Learning"
+      icon: "chart"
+      description: "Creating algorithms that improve through experience and data analysis."
+    - title: "Internet of Things"
+      icon: "network"
+      description: "Building interconnected systems for smart environments and applications."
+    - title: "Embedded Systems"
+      icon: "cpu"
+      description: "Designing efficient computing systems for specialized applications."
+
+  # Social/Academic links
+  social:
+    - name: "Email"
+      icon: "email"
+      url: "mailto:jane.smith@example.edu"
+    - name: "Google Scholar"
+      icon: "scholar"
+      url: "https://scholar.google.com/citations?user=EXAMPLE"
+    - name: "ORCID"
+      icon: "orcid"
+      url: "https://orcid.org/0000-0000-0000-0000"
+    - name: "GitHub"
+      icon: "github"
+      url: "https://github.com/janesmith"
+    - name: "LinkedIn"
+      icon: "linkedin"
+      url: "https://linkedin.com/in/janesmith"
+
+  # Theme settings
+  theme:
+    defaultMode: "auto"
+    showThemeToggle: true
+    
+  # Table of Contents
+  toc:
+    enable: true
+    startLevel: 2
+    endLevel: 4
+    
+  # Date format
+  dateFormat: "January 2, 2006"
+  
+  # Footer
+  footer:
+    copyright: "© {year} Dr. Jane Smith"
+    poweredBy: true
+
+# =============================================================================
+# Output Formats
+# =============================================================================
+outputs:
+  home:
+    - HTML
+    - RSS
+  section:
+    - HTML
+    - RSS
+  page:
+    - HTML

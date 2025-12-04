@@ -1,0 +1,227 @@
+{{ define "main" }} {{/* Books list template with card layout */}}
+
+<div class="container container--wide">
+    <header class="section-header">
+        <h1 class="section-header__title">{{ .Title }}</h1>
+        {{ with .Description }}
+        <p class="section-header__description">{{ . }}</p>
+        {{ end }} {{ with .Content }}
+        <div class="section-header__content">{{ . }}</div>
+        {{ end }}
+    </header>
+
+    {{ if .Pages }}
+    <div class="books-grid">
+        {{ range .Pages.ByDate.Reverse }}
+        <article class="book-card">
+            {{/* Book cover */}} {{ with .Params.cover.image }}
+            <img
+                src="{{ . | relURL }}"
+                alt="{{ $.Title }}"
+                class="book-card__cover"
+                loading="lazy"
+            />
+            {{ else }}
+            <div class="book-card__cover book-card__cover--placeholder">
+                {{ partial "icons/icons.html" "book" }}
+            </div>
+            {{ end }}
+
+            <div class="book-card__content">
+                {{/* Role badge */}} {{ with .Params.role }} {{ $badgeType :=
+                "default" }} {{ $badgeText := . }} {{ if eq . "organizer" }} {{
+                $badgeType = "info" }} {{ $badgeText = "Organizer" }} {{ else if
+                eq . "editor" }} {{ $badgeType = "warning" }} {{ $badgeText =
+                "Editor" }} {{ else if eq . "chapter" }} {{ $badgeType =
+                "success" }} {{ $badgeText = "Chapter Author" }} {{ else if eq .
+                "authored" }} {{ $badgeType = "default" }} {{ $badgeText =
+                "Author" }} {{ end }}
+                <span class="badge badge--{{ $badgeType }} book-card__badge"
+                    >{{ $badgeText }}</span
+                >
+                {{ end }} {{/* Title */}}
+                <h3 class="book-card__title">
+                    <a href="{{ .Permalink }}">{{ .Title }}</a>
+                </h3>
+
+                {{/* Chapter title (if applicable) */}} {{ with
+                .Params.chapter_title }}
+                <p class="book-card__chapter">{{ . }}</p>
+                {{ end }} {{/* Authors/Editors */}} {{ with .Params.author }}
+                <p class="book-card__authors">{{ delimit . ", " }}</p>
+                {{ end }} {{/* Language indicator */}} {{ with .Params.language
+                }} {{ $langName := . }} {{ if eq . "pt" }}{{ $langName =
+                "Portuguese" }} {{ else if eq . "en" }}{{ $langName = "English"
+                }} {{ else if eq . "es" }}{{ $langName = "Spanish" }} {{ else if
+                eq . "fr" }}{{ $langName = "French" }} {{ else if eq . "de" }}{{
+                $langName = "German" }} {{ end }}
+                <span class="book-card__language">{{ $langName }}</span>
+                {{ end }} {{/* Publisher */}} {{ with .Params.publisher }}
+                <p class="book-card__publisher">
+                    {{ . }}{{ with $.Params.year }}, {{ . }}{{ end }}
+                </p>
+                {{ end }} {{/* Links */}}
+                <div class="book-card__links">
+                    {{ with .Params.link }}
+                    <a
+                        href="{{ . }}"
+                        class="btn btn--secondary btn--sm"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        {{ partial "icons/icons.html" "external-link" }}
+                        <span>{{ i18n "view_paper" | default "View" }}</span>
+                    </a>
+                    {{ end }} {{ with .Params.pdf }}
+                    <a
+                        href="{{ . }}"
+                        class="btn btn--ghost btn--sm"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        {{ partial "icons/icons.html" "download" }}
+                        <span>PDF</span>
+                    </a>
+                    {{ end }}
+                </div>
+            </div>
+        </article>
+        {{ end }}
+    </div>
+    {{ else }}
+    <p class="list__empty">{{ i18n "no_books" | default "No books found." }}</p>
+    {{ end }}
+</div>
+
+<style>
+    .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: var(--sp-6);
+    }
+
+    .book-card {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: var(--sp-5);
+        padding: var(--sp-5);
+        background: var(--color-card-bg);
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        transition: all var(--duration-normal) var(--ease-out);
+    }
+
+    .book-card:hover {
+        border-color: var(--color-border-strong);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+
+    .book-card__cover {
+        width: 100px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .book-card__cover--placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-bg-alt);
+        color: var(--color-text-muted);
+    }
+
+    .book-card__cover--placeholder svg {
+        width: 40px;
+        height: 40px;
+    }
+
+    .book-card__content {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .book-card__badge {
+        align-self: flex-start;
+        margin-bottom: var(--sp-2);
+    }
+
+    .book-card__title {
+        font-family: var(--font-serif);
+        font-size: var(--fs-lg);
+        font-weight: 600;
+        line-height: var(--lh-snug);
+        margin-bottom: var(--sp-1);
+    }
+
+    .book-card__title a {
+        color: var(--color-text);
+        text-decoration: none;
+    }
+
+    .book-card__title a:hover {
+        color: var(--color-accent);
+    }
+
+    .book-card__chapter {
+        font-size: var(--fs-sm);
+        color: var(--color-text-secondary);
+        margin-bottom: var(--sp-2);
+        font-style: italic;
+    }
+
+    .book-card__authors {
+        font-size: var(--fs-sm);
+        color: var(--color-text-muted);
+        margin-bottom: var(--sp-2);
+    }
+
+    .book-card__language {
+        display: inline-block;
+        font-size: var(--fs-xs);
+        color: var(--color-text-faint);
+        text-transform: uppercase;
+        letter-spacing: var(--ls-wide);
+        margin-bottom: var(--sp-2);
+    }
+
+    .book-card__publisher {
+        font-size: var(--fs-xs);
+        color: var(--color-text-faint);
+        margin-top: auto;
+        margin-bottom: var(--sp-3);
+    }
+
+    .book-card__links {
+        display: flex;
+        gap: var(--sp-2);
+        margin-top: auto;
+    }
+
+    .btn--sm {
+        padding: var(--sp-1) var(--sp-3);
+        font-size: var(--fs-xs);
+    }
+
+    .btn--sm svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    @media (max-width: 500px) {
+        .book-card {
+            grid-template-columns: 80px 1fr;
+            gap: var(--sp-4);
+        }
+
+        .book-card__cover {
+            width: 80px;
+            height: 110px;
+        }
+    }
+</style>
+
+{{ end }}

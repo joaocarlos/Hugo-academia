@@ -1,0 +1,105 @@
+{{/* Table of Contents partial
+     Usage: {{ partial "toc.html" . }}
+     
+     Requires .TableOfContents to be available (automatic for Markdown content)
+     Can be customized via site params:
+       params.toc.enable: true/false
+       params.toc.startLevel: 2
+       params.toc.endLevel: 4
+*/}}
+
+{{ if and (.Site.Params.toc.enable | default true) .TableOfContents }}
+  {{ $toc := .TableOfContents }}
+  {{ if $toc }}
+    <aside class="toc" aria-label="{{ i18n "table_of_contents" }}">
+      <p class="toc__title">{{ i18n "on_this_page" }}</p>
+      <nav class="toc__nav" id="toc-nav">
+        {{ $toc }}
+      </nav>
+    </aside>
+  {{ end }}
+{{ end }}
+
+<style>
+  /* Enhance default Hugo TOC output */
+  .toc__nav > nav > ul,
+  .toc__nav > ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+  
+  .toc__nav ul {
+    list-style: none;
+    margin: 0;
+  }
+  
+  .toc__nav li {
+    margin: 0;
+  }
+  
+  .toc__nav a {
+    display: block;
+    padding: var(--sp-2) var(--sp-4);
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+    border-left: 2px solid transparent;
+    margin-left: -2px;
+    transition: all var(--duration-fast) var(--ease-out);
+    text-decoration: none;
+  }
+  
+  .toc__nav a:hover {
+    color: var(--color-text);
+  }
+  
+  .toc__nav a.toc-active {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+    font-weight: 500;
+  }
+  
+  /* Nested levels */
+  .toc__nav ul ul {
+    padding-left: var(--sp-4);
+  }
+  
+  .toc__nav ul ul a {
+    font-size: var(--fs-xs);
+    padding-top: var(--sp-1);
+    padding-bottom: var(--sp-1);
+  }
+  
+  .toc__nav ul ul ul a {
+    padding-left: var(--sp-6);
+    color: var(--color-text-faint);
+  }
+  
+  /* Hide on small screens, show via mobile TOC toggle */
+  @media (max-width: 1099px) {
+    .toc:not(.toc--mobile) {
+      display: none;
+    }
+  }
+  
+  /* Smooth scroll indicator */
+  .toc__nav a {
+    position: relative;
+  }
+  
+  .toc__nav a::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-accent);
+    transform: scaleY(0);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+  
+  .toc__nav a.toc-active::before {
+    transform: scaleY(1);
+  }
+</style>

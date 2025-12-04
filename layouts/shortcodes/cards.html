@@ -1,0 +1,27 @@
+{{/* Cards container shortcode
+     Usage:
+     {{< cards >}}
+       {{< card title="Card 1" icon="brain" >}}Content{{< /card >}}
+       {{< card title="Card 2" icon="chart" >}}Content{{< /card >}}
+     {{< /cards >}}
+     
+     Parameters:
+     - cols: Number of columns (2, 3, or 4), default auto-fit
+     - class: Additional CSS classes
+*/}}
+
+{{ $cols := .Get "cols" | default "" }}
+{{ $class := .Get "class" | default "" }}
+
+{{ $gridStyle := "" }}
+{{ if eq $cols "2" }}
+  {{ $gridStyle = "grid-template-columns: repeat(2, 1fr);" }}
+{{ else if eq $cols "3" }}
+  {{ $gridStyle = "grid-template-columns: repeat(3, 1fr);" }}
+{{ else if eq $cols "4" }}
+  {{ $gridStyle = "grid-template-columns: repeat(4, 1fr);" }}
+{{ end }}
+
+<div class="cards {{ $class }}" {{ if $gridStyle }}style="{{ $gridStyle }}"{{ end }}>
+  {{ .Inner }}
+</div>

@@ -1,0 +1,55 @@
+{{ define "main" }}
+{{/* 404 Error Page */}}
+
+<div class="error-page">
+    <div class="error-page__content">
+        <span class="error-page__code">404</span>
+        <h1 class="error-page__title">{{ i18n "page_not_found" | default "Page Not Found" }}</h1>
+        <p class="error-page__message">{{ i18n "page_not_found_message" | default "The page you're looking for doesn't exist or has been moved." }}</p>
+        <a href="{{ .Site.BaseURL }}" class="btn btn--primary">
+            {{ partial "icons/icons.html" "arrow-right" }} {{ i18n "go_home" | default "Back to Home" }}
+        </a>
+    </div>
+</div>
+
+<style>
+    .error-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - var(--header-height) - 200px);
+        text-align: center;
+        padding: var(--sp-8);
+    }
+
+    .error-page__content {
+        max-width: 400px;
+    }
+
+    .error-page__code {
+        display: block;
+        font-family: var(--font-serif);
+        font-size: clamp(6rem, 20vw, 10rem);
+        font-weight: 700;
+        line-height: 1;
+        color: var(--color-border);
+        margin-bottom: var(--sp-4);
+    }
+
+    .error-page__title {
+        font-size: var(--fs-2xl);
+        margin-bottom: var(--sp-4);
+    }
+
+    .error-page__message {
+        color: var(--color-text-secondary);
+        margin-bottom: var(--sp-8);
+    }
+
+    .error-page .btn svg {
+        order: -1;
+        transform: rotate(180deg);
+    }
+</style>
+
+{{ end }}

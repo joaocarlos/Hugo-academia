@@ -1,0 +1,74 @@
+{{/* Mobile menu partial */}}
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu__header">
+    <span class="mobile-menu__title">Menu</span>
+    <button 
+      class="mobile-menu__close" 
+      id="menu-close" 
+      aria-label="Close menu"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  
+  {{/* Navigation links */}}
+  <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+    {{ range .Site.Menus.main }}
+      <a 
+        href="{{ .URL }}" 
+        class="mobile-menu__link"
+        {{ if strings.HasPrefix .URL "http" }}target="_blank" rel="noopener noreferrer"{{ end }}
+      >
+        {{ .Name }}
+      </a>
+    {{ end }}
+  </nav>
+  
+  {{/* Social links */}}
+  {{ if .Site.Params.social }}
+  <div class="mobile-menu__social">
+    <span class="mobile-menu__social-title">{{ i18n "social" | default "Social" }}</span>
+    <div class="mobile-menu__social-grid">
+      {{ range .Site.Params.social }}
+        <a 
+          href="{{ .url }}" 
+          class="social-icon" 
+          title="{{ .name }}"
+          target="_blank" 
+          rel="noopener noreferrer"
+          aria-label="{{ .name }}"
+        >
+          {{ partial "icons/icons.html" .icon }}
+        </a>
+      {{ end }}
+    </div>
+  </div>
+  {{ end }}
+</div>
+
+{{/* Overlay */}}
+<div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+<style>
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 199;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-normal) var(--ease-out), 
+                visibility var(--duration-normal) var(--ease-out);
+  }
+  
+  .mobile-menu-overlay--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+</style>

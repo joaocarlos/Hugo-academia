@@ -1,0 +1,75 @@
+{{ define "main" }} {{/* Home page template - Profile Mode */}} {{/* Get
+language-specific profile params with fallback to global */}} {{ $langProfile :=
+.Site.Language.Params.profile }} {{ $globalProfile := .Site.Params.profile }} {{
+$profileTitle := $langProfile.title | default $globalProfile.title }} {{
+$profileDept := $langProfile.department | default $globalProfile.department }}
+{{ $profileInst := $langProfile.institution | default $globalProfile.institution
+}} {{ $profileBio := $langProfile.bio | default $globalProfile.bio }}
+
+<section class="profile">
+    {{/* Profile image */}} {{ with $globalProfile.image }}
+    <div class="profile__image-wrapper">
+        <img
+            src="{{ . | relURL }}"
+            alt="{{ $globalProfile.name }}"
+            class="profile__image"
+            loading="eager"
+        />
+    </div>
+    {{ end }} {{/* Name */}}
+    <h1 class="profile__name">
+        {{ $globalProfile.name | default .Site.Title }}
+    </h1>
+
+    {{/* Title & Institution */}} {{ with $profileTitle }}
+    <p class="profile__title">
+        {{ . }}{{ with $profileDept }}, {{ . }}{{ end }}
+    </p>
+    {{ end }} {{ with $profileInst }}
+    <p class="profile__institution">
+        {{ . }}{{ with $globalProfile.location }}, {{ . }}{{ end }}
+    </p>
+    {{ end }} {{/* Bio */}} {{ with $profileBio }}
+    <div class="profile__bio">{{ . | markdownify }}</div>
+    {{ end }} {{/* Research summary */}} {{ if .Site.Params.research }}
+    <p class="profile__research">
+        {{ i18n "my_research_includes" }} {{ $research := .Site.Params.research
+        }} {{ range $i, $r := $research }} {{- if eq $i (sub (len $research) 1)
+        }} {{ i18n "and" }} {{ end -}} {{ $r.title }} {{- if lt $i (sub (len
+        $research) 2) }}, {{ end -}} {{- if eq $i (sub (len $research) 2) }}{{
+        end -}} {{ end }}.
+    </p>
+    {{ end }} {{/* Social links */}} {{ if .Site.Params.social }}
+    <div class="profile__social">
+        {{ range .Site.Params.social }}
+        <a
+            href="{{ .url }}"
+            class="social-icon"
+            title="{{ .name }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="{{ .name }}"
+        >
+            {{ partial "icons/icons.html" .icon }}
+        </a>
+        {{ end }}
+    </div>
+    {{ end }}
+</section>
+
+<style>
+    .profile__social {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--sp-3);
+        margin-top: var(--sp-6);
+    }
+
+    .profile__social .social-icon {
+        width: 44px;
+        height: 44px;
+    }
+</style>
+
+{{ end }}

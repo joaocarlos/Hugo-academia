@@ -1,0 +1,44 @@
+{{/* Quote shortcode for styled blockquotes
+     Usage:
+     {{< quote author="Author Name" >}}
+     Quote text here
+     {{< /quote >}}
+     
+     Or for featured/large quotes:
+     {{< quote author="Author Name" featured="true" >}}
+     Quote text here
+     {{< /quote >}}
+     
+     Parameters:
+     - author: Attribution (optional)
+     - source: Source/publication (optional)
+     - featured: Use featured styling (optional, boolean)
+*/}}
+
+{{ $author := .Get "author" }}
+{{ $source := .Get "source" }}
+{{ $featured := .Get "featured" | default false }}
+
+{{ if $featured }}
+<div class="featured-quote">
+  <p class="featured-quote__text">
+    {{ .Inner | markdownify }}
+  </p>
+  {{ if or $author $source }}
+  <footer class="featured-quote__author">
+    {{ with $author }}{{ . }}{{ end }}
+    {{ with $source }}<cite>, {{ . }}</cite>{{ end }}
+  </footer>
+  {{ end }}
+</div>
+{{ else }}
+<blockquote>
+  {{ .Inner | markdownify }}
+  {{ if or $author $source }}
+  <footer>
+    {{ with $author }}{{ . }}{{ end }}
+    {{ with $source }}<cite>, {{ . }}</cite>{{ end }}
+  </footer>
+  {{ end }}
+</blockquote>
+{{ end }}
