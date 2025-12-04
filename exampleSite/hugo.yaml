@@ -110,7 +110,7 @@ params:
     department: "Department of Computer Science"
     institution: "Example University"
     location: "San Francisco, CA"
-    image: "/images/profile.jpg"
+    image: "/images/profile.svg"
     bio: |
       I am an Associate Professor at the Department of Computer Science at 
       Example University. My research focuses on artificial intelligence, 
