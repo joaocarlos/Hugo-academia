@@ -55,6 +55,11 @@ jobs:
         
       - name: Install Node.js dependencies
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+
+      - name: Setup theme symlink
+        run: |
+          mkdir -p exampleSite/themes
+          ln -s ../.. exampleSite/themes/academia
         
       - name: Build with Hugo
         env:
@@ -66,7 +71,6 @@ jobs:
           hugo \
             --gc \
             --minify \
-            --themesDir ../.. \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
             
       - name: Upload artifact
