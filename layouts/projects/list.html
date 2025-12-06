@@ -12,25 +12,32 @@
 
     {{ $active := where .Pages ".Params.status" "active" }}
     {{ $completed := where .Pages ".Params.status" "completed" }}
-    {{ if $active }}
+    
+    {{/* Sort active projects by start_date descending (newest first) */}}
+    {{ $activeSorted := sort $active ".Params.start_date" "desc" }}
+    
+    {{/* Sort completed projects by end_date descending (most recently completed first) */}}
+    {{ $completedSorted := sort $completed ".Params.end_date" "desc" }}
+    
+    {{ if $activeSorted }}
     <section class="projects-section">
         <h2 class="projects-section__title">
             {{ i18n "active_projects" | default "Active Projects" }}
         </h2>
         <div class="projects-grid">
-            {{ range $active }} {{ partial "project-card.html" . }} {{ end }}
+            {{ range $activeSorted }} {{ partial "project-card.html" . }} {{ end }}
         </div>
     </section>
-    {{ end }} {{ if $completed }}
+    {{ end }} {{ if $completedSorted }}
     <section class="projects-section">
         <h2 class="projects-section__title">
             {{ i18n "completed_projects" | default "Completed Projects" }}
         </h2>
         <div class="projects-grid">
-            {{ range $completed }} {{ partial "project-card.html" . }} {{ end }}
+            {{ range $completedSorted }} {{ partial "project-card.html" . }} {{ end }}
         </div>
     </section>
-    {{ end }} {{ if not (or $active $completed) }}
+    {{ end }} {{ if not (or $activeSorted $completedSorted) }}
     <p class="list__empty">
         {{ i18n "no_projects" | default "No projects available." }}
     </p>

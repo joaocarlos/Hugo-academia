@@ -1,18 +1,26 @@
 <article class="project-card">
   <div class="project-card__header">
-    {{/* Status indicator */}}
-    <span class="project-card__status project-card__status--{{ .Params.status | default "other" }}">
-      {{ if eq .Params.status "active" }}
-        <span class="status-dot status-dot--active"></span>
-        {{ i18n "status_active" | default "Active" }}
-      {{ else if eq .Params.status "completed" }}
-        <span class="status-dot status-dot--completed"></span>
-        {{ i18n "status_completed" | default "Completed" }}
-      {{ else }}
-        <span class="status-dot status-dot--completed"></span>
-        {{ with .Params.status }}{{ . | title }}{{ else }}{{ i18n "project" | default "Project" }}{{ end }}
+    <div class="project-card__badges">
+      {{/* Status indicator */}}
+      <span class="project-card__status project-card__status--{{ .Params.status | default "other" }}">
+        {{ if eq .Params.status "active" }}
+          <span class="status-dot status-dot--active"></span>
+          {{ i18n "status_active" | default "Active" }}
+        {{ else if eq .Params.status "completed" }}
+          <span class="status-dot status-dot--completed"></span>
+          {{ i18n "status_completed" | default "Completed" }}
+        {{ else }}
+          <span class="status-dot status-dot--completed"></span>
+          {{ with .Params.status }}{{ . | title }}{{ else }}{{ i18n "project" | default "Project" }}{{ end }}
+        {{ end }}
+      </span>
+
+      {{/* Category badge */}}
+      {{ with .Params.category }}
+      <span class="project-card__divider"></span>
+      <span class="project-card__category">{{ i18n (printf "category_%s" .) | default (. | title) }}</span>
       {{ end }}
-    </span>
+    </div>
 
     {{/* Website link */}}
     {{ with .Params.website }}
@@ -32,10 +40,12 @@
   {{ end }}
 
   <div class="project-card__meta">
-    {{/* Role */}}
+    {{/* Role with indicator dot */}}
     {{ with .Params.role }}
-    <div class="project-card__meta-item">
-      {{ partial "icons/icons.html" "user" }}
+    {{- $roleNorm := lower . -}}
+    {{- $isLeader := or (in $roleNorm "principal") (in $roleNorm "coordinator") (in $roleNorm "coordenador") -}}
+    <div class="project-card__meta-item project-card__role">
+      <span class="role-dot {{ if $isLeader }}role-dot--leader{{ else }}role-dot--member{{ end }}"></span>
       <span>{{ . }}</span>
     </div>
     {{ end }}
@@ -103,6 +113,12 @@
     margin-bottom: var(--sp-3);
   }
 
+  .project-card__badges {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+
   .project-card__status {
     display: inline-flex;
     align-items: center;
@@ -112,6 +128,21 @@
     text-transform: uppercase;
     letter-spacing: var(--ls-wide);
     color: var(--color-text-muted);
+  }
+
+  .project-card__divider {
+    width: 1px;
+    height: 12px;
+    background: var(--color-border-subtle);
+    opacity: 0.6;
+  }
+
+  .project-card__category {
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: var(--ls-wide);
+    color: var(--color-text-faint);
   }
 
   .status-dot {
@@ -128,6 +159,27 @@
 
   .status-dot--completed {
     background: var(--color-text-muted);
+  }
+
+  /* Role indicator dots - Material Design colors */
+  .role-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .role-dot--leader {
+    background: #1E88E5; /* Material Blue 600 */
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+  }
+
+  .role-dot--member {
+    background: #9E9E9E; /* Material Grey 500 */
+  }
+
+  .project-card__role {
+    font-weight: 500;
   }
 
   @keyframes pulse {
