@@ -18,6 +18,7 @@ $profileDept := $langProfile.department | default $globalProfile.department }}
                 alt="{{ $globalProfile.name }}"
                 class="profile__image"
                 loading="eager"
+                fetchpriority="high"
                 width="500"
                 height="667"
             />
