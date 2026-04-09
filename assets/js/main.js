@@ -14,19 +14,27 @@
   const html = document.documentElement;
   
   function getPreferredTheme() {
-    const stored = localStorage.getItem('theme');
-    if (stored) return stored;
+    try {
+      const stored = localStorage.getItem('theme');
+      if (stored) return stored;
+    } catch (e) {}
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
   
   function setTheme(theme) {
     html.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (e) {}
   }
   
   function toggleTheme() {
     const current = html.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
+    // Resolve 'auto' to the actual current appearance before toggling
+    const resolved = current === 'auto'
+      ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+      : current;
+    const next = resolved === 'dark' ? 'light' : 'dark';
     setTheme(next);
   }
   
@@ -34,10 +42,33 @@
     themeToggle.addEventListener('click', toggleTheme);
   }
   
-  // Listen for system theme changes
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-      setTheme(e.matches ? 'dark' : 'light');
+  // Follow system theme changes only when no explicit user preference is stored
+  function onSystemThemeChange(isDark) {
+    try {
+      if (!localStorage.getItem('theme')) {
+        // Update attribute only – do NOT persist to localStorage so CSS keeps control
+        html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      }
+    } catch (e) {
+      html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    }
+  }
+
+  var mql = window.matchMedia('(prefers-color-scheme: dark)');
+  // addEventListener supported in Safari ≥ 14; fall back to addListener for older Safari
+  if (typeof mql.addEventListener === 'function') {
+    mql.addEventListener('change', function(e) { onSystemThemeChange(e.matches); });
+  } else if (typeof mql.addListener === 'function') {
+    mql.addListener(function(e) { onSystemThemeChange(e.matches); });
+  }
+
+  // Re-apply theme on BFCache restore (Safari aggressively caches pages)
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) {
+      try {
+        var stored = localStorage.getItem('theme');
+        html.setAttribute('data-theme', stored || 'auto');
+      } catch (err) {}
     }
   });
 

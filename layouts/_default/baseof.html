@@ -147,12 +147,20 @@
   {{ end }}
   
   {{/* Theme script - runs before body to prevent flash */}}
+  {{/* Only override data-theme when the user has an explicit stored preference.
+       If none, leave data-theme="auto" so the CSS @media (prefers-color-scheme)
+       rule handles it natively – safe for all browsers including Safari. */}}
   <script>
     (function() {
-      const stored = localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = stored || (prefersDark ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
+      try {
+        var stored = localStorage.getItem('theme');
+        if (stored === 'light' || stored === 'dark') {
+          document.documentElement.setAttribute('data-theme', stored);
+        }
+        // No stored preference → keep data-theme="auto" and let CSS handle it
+      } catch (e) {
+        // localStorage unavailable (Safari Private Browsing) – CSS auto mode applies
+      }
     })();
   </script>
 </head>
