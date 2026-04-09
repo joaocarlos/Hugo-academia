@@ -1,0 +1,147 @@
+{{ define "main" }}
+{{/* Software list template – data driven from data/software.json */}}
+
+{{ $software := site.Data.software.software | default slice }}
+
+<div class="container">
+    <header class="section-header">
+        <h1 class="section-header__title">{{ .Title }}</h1>
+        {{ with .Description }}
+        <p class="section-header__description">{{ . }}</p>
+        {{ end }}
+        {{ with .Content }}
+        <div class="section-header__content">{{ . }}</div>
+        {{ end }}
+    </header>
+
+    {{ if $software }}
+    <div class="software-list">
+        {{ range $software }}
+        {{ $repoName := .name | replaceRE `^[^/]+/` "" }}
+        <article class="software-item">
+            <div class="software-item__header">
+                <h2 class="software-item__title">
+                    {{ with .github }}
+                    <a href="{{ . }}" target="_blank" rel="noopener noreferrer" class="software-item__link">
+                        {{ partial "icons/icons.html" "github" }}{{ $repoName }}
+                    </a>
+                    {{ else }}
+                    {{ $repoName }}
+                    {{ end }}
+                </h2>
+                {{ with .version }}
+                <span class="software-item__version badge badge--secondary">{{ . }}</span>
+                {{ end }}
+            </div>
+
+            {{ with .abstract }}
+            <p class="software-item__abstract">{{ . }}</p>
+            {{ end }}
+
+            <footer class="software-item__meta">
+                {{ with .year }}
+                <span class="software-item__year">{{ . }}</span>
+                {{ end }}
+
+                <div class="software-item__links">
+                    {{ with .github }}
+                    <a href="{{ . }}" class="btn btn--sm btn--outline" target="_blank" rel="noopener noreferrer">
+                        {{ partial "icons/icons.html" "github" }}GitHub
+                    </a>
+                    {{ end }}
+                    {{ with .doi }}
+                    <a href="https://doi.org/{{ . }}" class="btn btn--sm btn--outline" target="_blank" rel="noopener noreferrer">
+                        DOI
+                    </a>
+                    {{ end }}
+                </div>
+            </footer>
+        </article>
+        {{ end }}
+    </div>
+    {{ else }}
+    <p class="text-muted">{{ i18n "no_software" | default "No software entries yet." }}</p>
+    {{ end }}
+</div>
+
+<style>
+.software-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    margin-top: var(--sp-8);
+}
+
+.software-item {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-6);
+    transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.software-item:hover {
+    border-color: var(--color-border);
+}
+
+.software-item__header {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--sp-3);
+}
+
+.software-item__title {
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    margin: 0;
+}
+
+.software-item__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.software-item__link:hover {
+    color: var(--color-accent);
+}
+
+.software-item__version {
+    font-size: var(--fs-xs);
+    font-family: var(--font-mono);
+    background: var(--color-bg-alt);
+    color: var(--color-text-secondary);
+    padding: 2px var(--sp-2);
+    border-radius: var(--radius-sm);
+}
+
+.software-item__abstract {
+    color: var(--color-text-secondary);
+    font-size: var(--fs-sm);
+    margin-bottom: var(--sp-4);
+    line-height: 1.6;
+}
+
+.software-item__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+}
+
+.software-item__year {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+}
+
+.software-item__links {
+    display: flex;
+    gap: var(--sp-2);
+}
+</style>
+{{ end }}
