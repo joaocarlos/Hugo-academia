@@ -9,7 +9,7 @@ $profileDept := $langProfile.department | default $globalProfile.department }}
 <section class="profile">
     {{/* Profile image */}} {{ with $globalProfile.image }}
     {{ $imgSrc := . | relURL }}
-    {{ $webpSrc := $imgSrc | replaceRE `\.(jpg|jpeg|png)$` ".webp" }}
+    {{ $webpSrc := $imgSrc | replaceRE `[^/]+\.(jpg|jpeg|png)$` "profile.webp" }}
     <div class="profile__image-wrapper">
         <picture>
             <source srcset="{{ $webpSrc }}" type="image/webp">
