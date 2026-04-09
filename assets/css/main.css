@@ -92,7 +92,7 @@
 
     --color-text: #2d2d2d;
     --color-text-secondary: #5a5a5a;
-    --color-text-muted: #8a8a8a;
+    --color-text-muted: #696969;
     --color-text-faint: #a8a8a8;
 
     --color-border: #e0e0e0;
@@ -1195,6 +1195,7 @@ main {
 
 .footer__content a {
     color: var(--color-text-secondary);
+    text-decoration: underline;
 }
 
 .footer__content a:hover {

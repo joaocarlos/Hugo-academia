@@ -14,9 +14,26 @@
   
   {{/* Author */}}
   <meta name="author" content="{{ .Site.Params.author | default .Site.Title }}">
-  
+
+  {{/* Robots */}}
+  <meta name="robots" content="{{ if or .Draft (.Params.noindex) }}noindex, nofollow{{ else }}index, follow{{ end }}">
+
+  {{/* Keywords – page tags first, fall back to site research areas */}}
+  {{ $keywords := slice }}
+  {{ with .Params.tags }}{{ $keywords = $keywords | append . }}{{ end }}
+  {{ if not $keywords }}{{ range .Site.Params.research }}{{ $keywords = $keywords | append .title }}{{ end }}{{ end }}
+  {{ with $keywords }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
+
   {{/* Canonical URL */}}
   <link rel="canonical" href="{{ .Permalink }}">
+
+  {{/* hreflang alternate links for multilingual SEO */}}
+  {{ range .AllTranslations }}
+  <link rel="alternate" hreflang="{{ .Language.LanguageCode }}" href="{{ .Permalink }}">
+  {{ end }}
+  {{ if gt (len .Site.Languages) 1 }}
+  <link rel="alternate" hreflang="x-default" href="{{ .Site.Home.Permalink }}">
+  {{ end }}
   
   {{/* Fonts - Cormorant Garamond for headings, Montserrat for body */}}
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,24 +62,88 @@
   {{/* Open Graph / Twitter */}}
   {{ template "_internal/opengraph.html" . }}
   {{ template "_internal/twitter_cards.html" . }}
-  
-  {{/* Schema.org for academics */}}
-  {{ if .IsPage }}
+
+  {{/* og:image / twitter:image fallback for pages without .Params.images */}}
+  {{ if not .Params.images }}
+  {{ $ogImage := .Site.Params.profile.image | default "/images/profile-500.jpg" | absURL }}
+  <meta property="og:image" content="{{ $ogImage }}">
+  <meta property="og:image:width" content="500">
+  <meta property="og:image:height" content="667">
+  <meta name="twitter:image" content="{{ $ogImage }}">
+  {{ end }}
+  {{ with .Site.Params.seo.twitter }}
+  <meta name="twitter:creator" content="{{ . }}">
+  {{ end }}
+
+  {{/* Schema.org structured data */}}
+
+  {{/* WebSite schema – present on every page */}}
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "{{ if eq .Section "papers" }}ScholarlyArticle{{ else if eq .Section "posts" }}BlogPosting{{ else }}WebPage{{ end }}",
-    "headline": "{{ .Title }}",
-    "author": {
-      "@type": "Person",
-      "name": "{{ .Site.Params.author }}"
-    },
-    "datePublished": "{{ .Date.Format "2006-01-02" }}",
-    "dateModified": "{{ .Lastmod.Format "2006-01-02" }}",
-    "description": "{{ $description | plainify | truncate 160 }}",
-    "url": "{{ .Permalink }}"
-  }
+  {{ dict "@context" "https://schema.org" "@type" "WebSite" "name" .Site.Title "url" .Site.BaseURL | jsonify }}
   </script>
+
+  {{/* Person schema – homepage only */}}
+  {{ if .IsHome }}
+  {{ $profile := .Site.Params.profile }}
+  {{ $profileTitle := .Site.Language.Params.profile.title | default $profile.title }}
+  {{ $profileInst := .Site.Language.Params.profile.institution | default $profile.institution }}
+  {{ $sameAs := slice }}
+  {{ range .Site.Params.social }}{{ if strings.HasPrefix .url "http" }}{{ $sameAs = $sameAs | append .url }}{{ end }}{{ end }}
+  <script type="application/ld+json">
+  {{ dict
+    "@context" "https://schema.org"
+    "@type" "Person"
+    "name" $profile.name
+    "url" .Site.BaseURL
+    "image" ($profile.image | default "/images/profile-500.jpg" | absURL)
+    "jobTitle" $profileTitle
+    "worksFor" (dict "@type" "Organization" "name" $profileInst)
+    "sameAs" $sameAs
+  | jsonify }}
+  </script>
+  {{ end }}
+
+  {{/* Page-level schema */}}
+  {{ if .IsPage }}
+  {{ $desc := $description | plainify | truncate 160 }}
+  {{ if eq .Section "papers" }}
+  {{ $authors := slice }}
+  {{ range .Params.authors }}{{ $authors = $authors | append (dict "@type" "Person" "name" .) }}{{ end }}
+  {{ $paper := dict
+    "@context" "https://schema.org"
+    "@type" "ScholarlyArticle"
+    "headline" .Title
+    "author" $authors
+    "datePublished" (.Params.year | string)
+    "description" $desc
+    "mainEntityOfPage" .Permalink
+  }}
+  {{ with .Params.doi }}
+  {{ $paper = merge $paper (dict
+    "identifier" (dict "@type" "PropertyValue" "propertyID" "doi" "value" .)
+    "url" (printf "https://doi.org/%s" .)
+  ) }}
+  {{ end }}
+  {{ with .Params.venue }}
+  {{ $paper = merge $paper (dict "isPartOf" (dict "@type" "Periodical" "name" .)) }}
+  {{ end }}
+  <script type="application/ld+json">
+  {{ $paper | jsonify }}
+  </script>
+  {{ else }}
+  <script type="application/ld+json">
+  {{ dict
+    "@context" "https://schema.org"
+    "@type" (cond (eq .Section "posts") "BlogPosting" "WebPage")
+    "headline" .Title
+    "author" (dict "@type" "Person" "name" .Site.Params.author)
+    "datePublished" (.Date.Format "2006-01-02")
+    "dateModified" (.Lastmod.Format "2006-01-02")
+    "description" $desc
+    "url" .Permalink
+  | jsonify }}
+  </script>
+  {{ end }}
   {{ end }}
   
   {{/* Theme script - runs before body to prevent flash */}}
