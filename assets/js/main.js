@@ -314,6 +314,20 @@
   });
 
   // ==========================================================================
+  // Language Switcher – Record Explicit Choice
+  // ==========================================================================
+  // When the user actively clicks a language link, store the preference so the
+  // auto-detection script never overrides their decision on future visits.
+  document.addEventListener('click', function(e) {
+    var link = e.target.closest('.lang-switcher__link');
+    if (!link) return;
+    try {
+      var hreflang = (link.getAttribute('hreflang') || link.getAttribute('lang') || '').toLowerCase();
+      localStorage.setItem('lang-pref', hreflang.startsWith('pt') ? 'pt-br' : 'en');
+    } catch (e) {}
+  });
+
+  // ==========================================================================
   // Reading Progress Indicator (Optional)
   // ==========================================================================
   

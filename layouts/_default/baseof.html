@@ -146,7 +146,29 @@
   {{ end }}
   {{ end }}
   
-  {{/* Theme script - runs before body to prevent flash */}}
+  {{/* Language auto-detection: on first visit, redirect to the user's system language.
+       Subsequent visits use the stored preference; clicking the switcher locks the choice. */}}
+  {{ if gt (len .Site.Languages) 1 }}
+  <script>
+    (function() {
+      try {
+        if (localStorage.getItem('lang-pref')) return; // already decided — respect it
+        var lang = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+        var onPtBr = window.location.pathname.indexOf('/pt-br') === 0;
+        if (lang.startsWith('pt')) {
+          localStorage.setItem('lang-pref', 'pt-br');
+          if (!onPtBr) { window.location.replace('/pt-br/'); }
+        } else {
+          localStorage.setItem('lang-pref', 'en');
+        }
+      } catch (e) {
+        // localStorage unavailable (e.g. Safari Private Browsing) — stay on current page
+      }
+    })();
+  </script>
+  {{ end }}
+
+  {{/* Theme script - runs before body to prevent flash */
   {{/* Only override data-theme when the user has an explicit stored preference.
        If none, leave data-theme="auto" so the CSS @media (prefers-color-scheme)
        rule handles it natively – safe for all browsers including Safari. */}}
