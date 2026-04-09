@@ -8,13 +8,20 @@ $profileDept := $langProfile.department | default $globalProfile.department }}
 
 <section class="profile">
     {{/* Profile image */}} {{ with $globalProfile.image }}
+    {{ $imgSrc := . | relURL }}
+    {{ $webpSrc := $imgSrc | replaceRE `\.(jpg|jpeg|png)$` ".webp" }}
     <div class="profile__image-wrapper">
-        <img
-            src="{{ . | relURL }}"
-            alt="{{ $globalProfile.name }}"
-            class="profile__image"
-            loading="eager"
-        />
+        <picture>
+            <source srcset="{{ $webpSrc }}" type="image/webp">
+            <img
+                src="{{ $imgSrc }}"
+                alt="{{ $globalProfile.name }}"
+                class="profile__image"
+                loading="eager"
+                width="500"
+                height="667"
+            />
+        </picture>
     </div>
     {{ end }} {{/* Name */}}
     <h1 class="profile__name">
