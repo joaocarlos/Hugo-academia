@@ -55,7 +55,9 @@
     menuOverlay.classList.add('mobile-menu-overlay--visible');
     menuToggle.setAttribute('aria-expanded', 'true');
     mobileMenu.setAttribute('aria-hidden', 'false');
+    mobileMenu.removeAttribute('inert');
     document.body.style.overflow = 'hidden';
+    menuClose.focus();
   }
   
   function closeMenu() {
@@ -63,7 +65,9 @@
     menuOverlay.classList.remove('mobile-menu-overlay--visible');
     menuToggle.setAttribute('aria-expanded', 'false');
     mobileMenu.setAttribute('aria-hidden', 'true');
+    mobileMenu.setAttribute('inert', '');
     document.body.style.overflow = '';
+    menuToggle.focus();
   }
   
   if (menuToggle) {
